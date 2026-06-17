@@ -16,48 +16,104 @@ import ProfileEdit from './components/ProfileEdit';
 import AuthScreens from './components/AuthScreens';
 import { Trophy, Compass, Star, Flame, Award, ShieldAlert } from 'lucide-react';
 
+import { supabase } from './lib/supabase';
+
 export default function App() {
   // 1. Core Persistent States
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    const saved = localStorage.getItem('seman_isLoggedIn');
-    return saved ? JSON.parse(saved) : false;
-  });
-
-  const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('seman_user');
-    return saved ? JSON.parse(saved) : INITIAL_USER_PROFILE;
-  });
-
-  const [matches, setMatches] = useState<Match[]>(() => {
-    const saved = localStorage.getItem('seman_matches');
-    return saved ? JSON.parse(saved) : INITIAL_MATCHES;
-  });
-
-  const [predictions, setPredictions] = useState<Prediction[]>(() => {
-    const saved = localStorage.getItem('seman_predictions');
-    return saved ? JSON.parse(saved) : INITIAL_PREDICTIONS;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [authChecking, setAuthChecking] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<UserProfile>(INITIAL_USER_PROFILE);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
 
   const [authView, setAuthView] = useState<'login' | 'register' | 'recovery'>('login');
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
 
-  // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('seman_isLoggedIn', JSON.stringify(isLoggedIn));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      } else {
+        setAuthChecking(false);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      loadData();
+    }
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    localStorage.setItem('seman_user', JSON.stringify(currentUser));
-  }, [currentUser]);
+  const loadUserProfile = async (userId: string) => {
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (!error && data) {
+      setCurrentUser({
+        name: data.name || '',
+        email: data.email || '',
+        avatar: data.avatar || INITIAL_USER_PROFILE.avatar,
+        role: data.role || 'Membro da Família',
+        totalBets: data.total_bets || 0,
+        totalPoints: data.total_points || 0
+      });
+    }
+    setAuthChecking(false);
+  };
 
-  useEffect(() => {
-    localStorage.setItem('seman_matches', JSON.stringify(matches));
-  }, [matches]);
+  const loadData = async () => {
+    const [matchesRes, predictionsRes] = await Promise.all([
+      supabase.from('matches').select('*'),
+      supabase.from('predictions').select(`
+        *,
+        profiles!inner(email, name, avatar)
+      `)
+    ]);
 
-  useEffect(() => {
-    localStorage.setItem('seman_predictions', JSON.stringify(predictions));
-  }, [predictions]);
+    if (!matchesRes.error && matchesRes.data) {
+      setMatches(matchesRes.data.map(m => ({
+        id: m.id,
+        teamHome: m.team_home,
+        teamAway: m.team_away,
+        flagHome: m.flag_home,
+        flagAway: m.flag_away,
+        group: m.group,
+        dateStr: m.date_str,
+        status: m.status,
+        scoreHome: m.score_home,
+        scoreAway: m.score_away,
+        prize: m.prize,
+        prizeImage: m.prize_image
+      })));
+    }
+
+    if (!predictionsRes.error && predictionsRes.data) {
+      setPredictions(predictionsRes.data.map(p => ({
+        id: p.id,
+        matchId: p.match_id,
+        userEmail: p.profiles.email,
+        userName: p.profiles.name,
+        userAvatar: p.profiles.avatar,
+        scoreHome: p.score_home,
+        scoreAway: p.score_away,
+        betValue: p.bet_value,
+        pointsCalculated: p.points_calculated,
+        createdAt: p.created_at
+      })));
+    }
+  };
 
   // 2. Score Calculation Helpers (5 pts correct score, 3 pts correct outcome)
   const calculatePoints = (exactPred: Prediction, finishedMatch: Match): number => {
@@ -125,75 +181,84 @@ export default function App() {
   const activeUserPoints = computedRanking.find(r => r.email === currentUser.email)?.points || currentUser.totalPoints;
 
   // 4. Action Callback Handlers
-  const handleLoginSuccess = (name: string, email: string) => {
-    // Pre-fill or construct fresh user profile
-    const freshUser: UserProfile = {
-      name: name,
-      email: email,
-      avatar: currentUser.avatar || INITIAL_USER_PROFILE.avatar,
-      role: email === 'manoel.neto.arq@gmail.com' ? 'Admin da Família' : 'Membro da Família',
-      totalBets: 42,
-      totalPoints: 185
-    };
-    setCurrentUser(freshUser);
+  const handleLoginSuccess = async (name: string, email: string) => {
     setIsLoggedIn(true);
     setCurrentScreen('home');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
     setAuthView('login');
-    // We can clear some keys but keep matches and custom predictions for sandbox ease-of-use
   };
 
-  const handleUpdateProfile = (name: string, email: string, avatar: string) => {
-    setCurrentUser(prev => ({
-      ...prev,
-      name,
-      email,
-      avatar
-    }));
+  const handleUpdateProfile = async (name: string, email: string, avatar: string) => {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session?.session?.user) return;
+    
+    await supabase.from('profiles').update({ name, avatar }).eq('id', session.session.user.id);
+    setCurrentUser(prev => ({ ...prev, name, email, avatar }));
   };
 
-  const handleAddPrediction = (rawPred: Omit<Prediction, 'id' | 'createdAt'>) => {
-    const newId = `pred-${Date.now()}`;
-    const newPrediction: Prediction = {
-      ...rawPred,
-      id: newId,
-      createdAt: new Date().toISOString()
-    };
+  const handleAddPrediction = async (rawPred: Omit<Prediction, 'id' | 'createdAt'>) => {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session?.session?.user) return;
 
-    // Filter out old prediction for same user and same match to avoid duplicate bets
-    setPredictions(prev => [
-      ...prev.filter(p => !(p.matchId === rawPred.matchId && p.userEmail === rawPred.userEmail)),
-      newPrediction
-    ]);
+    const { data, error } = await supabase.from('predictions').upsert({
+      match_id: rawPred.matchId,
+      user_id: session.session.user.id,
+      score_home: rawPred.scoreHome,
+      score_away: rawPred.scoreAway
+    }, { onConflict: 'match_id, user_id' }).select().single();
+
+    if (!error) {
+      loadData(); // recarrega para ter os joins corretos
+    }
   };
 
-  const handleAddMatch = (rawMatch: Omit<Match, 'id'>) => {
-    const newId = `match-${Date.now()}`;
-    const newMatch: Match = {
-      ...rawMatch,
-      id: newId
-    };
-    setMatches(prev => [...prev, newMatch]);
+  const handleAddMatch = async (rawMatch: Omit<Match, 'id'>) => {
+    const { error } = await supabase.from('matches').insert({
+      team_home: rawMatch.teamHome,
+      team_away: rawMatch.teamAway,
+      flag_home: rawMatch.flagHome,
+      flag_away: rawMatch.flagAway,
+      group: rawMatch.group,
+      date_str: rawMatch.dateStr,
+      status: rawMatch.status,
+      prize: rawMatch.prize,
+      prize_image: rawMatch.prizeImage
+    });
+    if (!error) loadData();
   };
 
-  const handleUpdateMatchStatus = (matchId: string, status: MatchStatus) => {
-    setMatches(prev => prev.map(m => m.id === matchId ? { ...m, status } : m));
+  const handleEditMatch = async (matchId: string, updatedMatch: Omit<Match, 'id'>) => {
+    const { error } = await supabase.from('matches').update({
+      team_home: updatedMatch.teamHome,
+      team_away: updatedMatch.teamAway,
+      flag_home: updatedMatch.flagHome,
+      flag_away: updatedMatch.flagAway,
+      group: updatedMatch.group,
+      date_str: updatedMatch.dateStr,
+      status: updatedMatch.status,
+      prize: updatedMatch.prize,
+      prize_image: updatedMatch.prizeImage
+    }).eq('id', matchId);
+    if (!error) loadData();
   };
 
-  const handleLaunchResults = (matchId: string, scoreHome: number, scoreAway: number) => {
-    setMatches(prev => prev.map(m => m.id === matchId ? { 
-      ...m, 
-      status: 'Finalizado', 
-      scoreHome, 
-      scoreAway 
-    } : m));
+  const handleUpdateMatchStatus = async (matchId: string, status: MatchStatus) => {
+    await supabase.from('matches').update({ status }).eq('id', matchId);
+    loadData();
   };
 
-  const handleDeletePrediction = (predictionId: string) => {
-    setPredictions(prev => prev.filter(p => p.id !== predictionId));
+  const handleLaunchResults = async (matchId: string, scoreHome: number, scoreAway: number) => {
+    await supabase.from('matches').update({ status: 'Finalizado', score_home: scoreHome, score_away: scoreAway }).eq('id', matchId);
+    loadData();
+  };
+
+  const handleDeletePrediction = async (predictionId: string) => {
+    await supabase.from('predictions').delete().eq('id', predictionId);
+    loadData();
   };
 
   // Navigations back helper
@@ -310,6 +375,7 @@ export default function App() {
             matches={matches}
             predictions={predictions}
             onAddMatch={handleAddMatch}
+            onEditMatch={handleEditMatch}
             onUpdateMatchStatus={handleUpdateMatchStatus}
             onLaunchResults={handleLaunchResults}
             onDeletePrediction={handleDeletePrediction}
@@ -340,6 +406,10 @@ export default function App() {
   };
 
   // 5. Auth-Screen wrapper otherwise
+  if (authChecking) {
+    return <div className="min-h-screen bg-[#f7f9fb] flex items-center justify-center">Carregando...</div>;
+  }
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-[#f7f9fb] flex flex-col justify-center items-center">
@@ -361,6 +431,7 @@ export default function App() {
         onNavigate={(screen) => setCurrentScreen(screen)}
         onBack={handleBack}
         userAvatar={currentUser.avatar}
+        isAdmin={currentUser.role === 'Admin da Família'}
       />
 
       {/* Main Content Viewport */}
@@ -372,6 +443,7 @@ export default function App() {
       <BottomNavBar 
         currentScreen={currentScreen}
         onNavigate={(screen) => setCurrentScreen(screen)}
+        isAdmin={currentUser.role === 'Admin da Família'}
       />
     </div>
   );

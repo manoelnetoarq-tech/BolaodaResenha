@@ -6,9 +6,10 @@ interface HeaderProps {
   onNavigate: (screen: Screen) => void;
   onBack?: () => void;
   userAvatar: string;
+  isAdmin?: boolean;
 }
 
-export default function Header({ currentScreen, onNavigate, onBack, userAvatar }: HeaderProps) {
+export default function Header({ currentScreen, onNavigate, onBack, userAvatar, isAdmin }: HeaderProps) {
   // Check if current screen is transactional / has back button
   const hasBack = ['match-details', 'edit-profile', 'change-password'].includes(currentScreen);
 
@@ -86,16 +87,18 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar }
           >
             Ranking
           </button>
-          <button
-            onClick={() => onNavigate('admin')}
-            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-              currentScreen === 'admin'
-                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
-                : 'text-[#3e4a3d]'
-            }`}
-          >
-            Admin
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => onNavigate('admin')}
+              className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+                currentScreen === 'admin'
+                  ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                  : 'text-[#3e4a3d]'
+              }`}
+            >
+              Admin
+            </button>
+          )}
         </nav>
 
         {/* Profile trigger */}

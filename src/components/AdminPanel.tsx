@@ -1,11 +1,13 @@
-import { useState, FormEvent } from 'react';
-import { PlusCircle, ArrowRight, Edit, RefreshCw, CheckSquare, Trash2, Calendar, Lock, ShieldAlert } from 'lucide-react';
+import { useState, FormEvent, useRef, ChangeEvent } from 'react';
+import { PlusCircle, ArrowRight, Edit, RefreshCw, CheckSquare, Trash2, Calendar, Lock, ShieldAlert, Upload } from 'lucide-react';
 import { Match, Prediction, MatchStatus } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface AdminPanelProps {
   matches: Match[];
   predictions: Prediction[];
   onAddMatch: (match: Omit<Match, 'id'>) => void;
+  onEditMatch: (matchId: string, match: Omit<Match, 'id'>) => void;
   onUpdateMatchStatus: (matchId: string, status: MatchStatus) => void;
   onLaunchResults: (matchId: string, scoreHome: number, scoreAway: number) => void;
   onDeletePrediction: (predictionId: string) => void;
@@ -15,41 +17,146 @@ export default function AdminPanel({
   matches,
   predictions,
   onAddMatch,
+  onEditMatch,
   onUpdateMatchStatus,
   onLaunchResults,
   onDeletePrediction
 }: AdminPanelProps) {
   const [showAddMatchForm, setShowAddMatchForm] = useState(false);
   const [showLaunchResultsId, setShowLaunchResultsId] = useState<string | null>(null);
+  const [editingMatchId, setEditingMatchId] = useState<string | null>(null);
 
   // New Match Inputs State
   const [newTeamHome, setNewTeamHome] = useState('');
   const [newTeamAway, setNewTeamAway] = useState('');
+  const [newFlagHome, setNewFlagHome] = useState('');
+  const [newFlagAway, setNewFlagAway] = useState('');
   const [newGroup, setNewGroup] = useState('FASE DE GRUPOS');
   const [newDateStr, setNewDateStr] = useState('19/06/2026 às 19:00');
+  const [newPrize, setNewPrize] = useState('');
+
+  // Flag Upload States
+  const [isUploadingHome, setIsUploadingHome] = useState(false);
+  const [isUploadingAway, setIsUploadingAway] = useState(false);
+  const [isUploadingPrize, setIsUploadingPrize] = useState(false);
+  const fileInputHomeRef = useRef<HTMLInputElement>(null);
+  const fileInputAwayRef = useRef<HTMLInputElement>(null);
+  const fileInputPrizeRef = useRef<HTMLInputElement>(null);
+  const [newPrizeImage, setNewPrizeImage] = useState('');
 
   // Launch Score Inputs State
   const [launchScoreHome, setLaunchScoreHome] = useState<number>(0);
   const [launchScoreAway, setLaunchScoreAway] = useState<number>(0);
 
+  const handleFlagUpload = async (event: ChangeEvent<HTMLInputElement>, isHome: boolean) => {
+    try {
+      if (isHome) setIsUploadingHome(true);
+      else setIsUploadingAway(true);
+
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `flag-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('flags')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('flags').getPublicUrl(filePath);
+      
+      if (isHome) setNewFlagHome(data.publicUrl);
+      else setNewFlagAway(data.publicUrl);
+    } catch (error) {
+      console.error('Error uploading flag:', error);
+      alert('Erro ao fazer upload da imagem.');
+    } finally {
+      if (isHome) setIsUploadingHome(false);
+      else setIsUploadingAway(false);
+    }
+  };
+
+  const handlePrizeUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    try {
+      setIsUploadingPrize(true);
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `prize-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('prizes')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('prizes').getPublicUrl(filePath);
+      setNewPrizeImage(data.publicUrl);
+    } catch (error) {
+      console.error('Error uploading prize image:', error);
+      alert('Erro ao fazer upload da imagem do prêmio.');
+    } finally {
+      setIsUploadingPrize(false);
+    }
+  };
+
   const handleCreateMatchSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!newTeamHome.trim() || !newTeamAway.trim()) return;
 
-    onAddMatch({
-      teamHome: newTeamHome.trim(),
-      teamAway: newTeamAway.trim(),
-      flagHome: '', // Defaults to initials
-      flagAway: '',
-      group: newGroup,
-      dateStr: newDateStr,
-      status: 'Aberto'
-    });
+    if (editingMatchId) {
+      onEditMatch(editingMatchId, {
+        teamHome: newTeamHome.trim(),
+        teamAway: newTeamAway.trim(),
+        flagHome: newFlagHome,
+        flagAway: newFlagAway,
+        group: newGroup,
+        dateStr: newDateStr,
+        prize: newPrize,
+        prizeImage: newPrizeImage,
+        status: matches.find(m => m.id === editingMatchId)?.status || 'Aberto'
+      });
+    } else {
+      onAddMatch({
+        teamHome: newTeamHome.trim(),
+        teamAway: newTeamAway.trim(),
+        flagHome: newFlagHome,
+        flagAway: newFlagAway,
+        group: newGroup,
+        dateStr: newDateStr,
+        prize: newPrize,
+        prizeImage: newPrizeImage,
+        status: 'Aberto'
+      });
+    }
 
     // Reset Form
     setNewTeamHome('');
     setNewTeamAway('');
+    setNewFlagHome('');
+    setNewFlagAway('');
+    setNewPrize('');
+    setNewPrizeImage('');
+    setEditingMatchId(null);
     setShowAddMatchForm(false);
+  };
+
+  const handleEditClick = (match: Match) => {
+    setEditingMatchId(match.id);
+    setNewTeamHome(match.teamHome);
+    setNewTeamAway(match.teamAway);
+    setNewFlagHome(match.flagHome || '');
+    setNewFlagAway(match.flagAway || '');
+    setNewGroup(match.group || '');
+    setNewDateStr(match.dateStr || '');
+    setNewPrize(match.prize || '');
+    setNewPrizeImage(match.prizeImage || '');
+    setShowAddMatchForm(true);
   };
 
   const handleLaunchSubmit = (matchId: string) => {
@@ -77,7 +184,18 @@ export default function AdminPanel({
       <div className="grid grid-cols-1 gap-4">
         {!showAddMatchForm ? (
           <button 
-            onClick={() => setShowAddMatchForm(true)}
+            onClick={() => {
+              setEditingMatchId(null);
+              setNewTeamHome('');
+              setNewTeamAway('');
+              setNewFlagHome('');
+              setNewFlagAway('');
+              setNewGroup('FASE DE GRUPOS');
+              setNewDateStr('19/06/2026 às 19:00');
+              setNewPrize('');
+              setNewPrizeImage('');
+              setShowAddMatchForm(true);
+            }}
             className="bg-[#006b2c] text-white rounded-2xl p-4 flex items-center justify-between shadow-[0_4px_12px_rgba(0,107,44,0.15)] hover:bg-[#005320] active:scale-[0.98] transition-all cursor-pointer font-sans text-sm font-semibold group"
           >
             <div className="flex items-center gap-2.5">
@@ -91,30 +209,60 @@ export default function AdminPanel({
             onSubmit={handleCreateMatchSubmit}
             className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col gap-4 border border-[#eceef0]"
           >
-            <h3 className="font-poppins font-bold text-[#191c1e] text-base">Cadastrar Novo Jogo no Bolão</h3>
+            <h3 className="font-poppins font-bold text-[#191c1e] text-base">
+              {editingMatchId ? 'Editar Jogo no Bolão' : 'Cadastrar Novo Jogo no Bolão'}
+            </h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#3e4a3d] mb-1 font-sans">Time Mandante</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Argentina"
-                  value={newTeamHome}
-                  onChange={(e) => setNewTeamHome(e.target.value)}
-                  className="w-full h-11 bg-[#f2f4f6] border border-[#eceef0] rounded-xl px-4 text-xs font-sans text-[#191c1e] outline-none"
-                  required
-                />
+              <div className="flex flex-col gap-1">
+                <label className="block text-xs font-semibold text-[#3e4a3d] font-sans">Time Mandante</label>
+                <div className="flex items-center gap-2 bg-[#f2f4f6] border border-[#eceef0] rounded-xl px-2 h-11">
+                  {newFlagHome && (
+                    <img src={newFlagHome} className="w-6 h-6 rounded-full object-cover shrink-0" alt="Home Flag" />
+                  )}
+                  <input type="file" accept="image/*" hidden ref={fileInputHomeRef} onChange={(e) => handleFlagUpload(e, true)} />
+                  <button 
+                    type="button" 
+                    onClick={() => fileInputHomeRef.current?.click()} 
+                    disabled={isUploadingHome}
+                    className="p-1.5 rounded-md hover:bg-[#eceef0] active:scale-95 text-[#6e7b6c] shrink-0 cursor-pointer"
+                  >
+                    {isUploadingHome ? <div className="w-4 h-4 rounded-full border-2 border-[#006b2c] border-t-transparent animate-spin" /> : <Upload className="w-4 h-4"/>}
+                  </button>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Argentina"
+                    value={newTeamHome}
+                    onChange={(e) => setNewTeamHome(e.target.value)}
+                    className="w-full bg-transparent text-xs font-sans text-[#191c1e] outline-none"
+                    required
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#3e4a3d] mb-1 font-sans">Time Visitante</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Alemanha"
-                  value={newTeamAway}
-                  onChange={(e) => setNewTeamAway(e.target.value)}
-                  className="w-full h-11 bg-[#f2f4f6] border border-[#eceef0] rounded-xl px-4 text-xs font-sans text-[#191c1e] outline-none"
-                  required
-                />
+              <div className="flex flex-col gap-1">
+                <label className="block text-xs font-semibold text-[#3e4a3d] font-sans">Time Visitante</label>
+                <div className="flex items-center gap-2 bg-[#f2f4f6] border border-[#eceef0] rounded-xl px-2 h-11">
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Alemanha"
+                    value={newTeamAway}
+                    onChange={(e) => setNewTeamAway(e.target.value)}
+                    className="w-full bg-transparent text-xs font-sans text-[#191c1e] outline-none text-right"
+                    required
+                  />
+                  <input type="file" accept="image/*" hidden ref={fileInputAwayRef} onChange={(e) => handleFlagUpload(e, false)} />
+                  <button 
+                    type="button" 
+                    onClick={() => fileInputAwayRef.current?.click()} 
+                    disabled={isUploadingAway}
+                    className="p-1.5 rounded-md hover:bg-[#eceef0] active:scale-95 text-[#6e7b6c] shrink-0 cursor-pointer"
+                  >
+                    {isUploadingAway ? <div className="w-4 h-4 rounded-full border-2 border-[#006b2c] border-t-transparent animate-spin" /> : <Upload className="w-4 h-4"/>}
+                  </button>
+                  {newFlagAway && (
+                    <img src={newFlagAway} className="w-6 h-6 rounded-full object-cover shrink-0" alt="Away Flag" />
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-[#3e4a3d] mb-1 font-sans">Categoria / Fase</label>
@@ -136,12 +284,57 @@ export default function AdminPanel({
                   className="w-full h-11 bg-[#f2f4f6] border border-[#eceef0] rounded-xl px-4 text-xs font-sans text-[#191c1e] outline-none"
                 />
               </div>
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-[#3e4a3d] mb-1 font-sans">Prêmios da Rodada</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: 1º Lugar R$ 100, Último paga a cerveja"
+                  value={newPrize}
+                  onChange={(e) => setNewPrize(e.target.value)}
+                  className="w-full h-11 bg-[#fff9e6] border border-[#fed01b]/50 rounded-xl px-4 text-xs font-sans text-[#6f5900] outline-none"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-[#3e4a3d] mb-1 font-sans">Imagem do Prêmio</label>
+                <div className="flex items-center gap-3">
+                  {newPrizeImage && (
+                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#fed01b]/50 bg-white shrink-0">
+                      <img src={newPrizeImage} alt="Prize" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => fileInputPrizeRef.current?.click()}
+                    disabled={isUploadingPrize}
+                    className="flex-1 h-11 bg-[#f2f4f6] text-[#3e4a3d] font-sans text-xs font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-[#eceef0] transition-colors border border-[#eceef0]"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {isUploadingPrize ? 'Enviando...' : (newPrizeImage ? 'Trocar Imagem do Prêmio' : 'Upload da Imagem do Prêmio')}
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputPrizeRef}
+                    onChange={handlePrizeUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-2 justify-end mt-2">
               <button 
                 type="button"
-                onClick={() => setShowAddMatchForm(false)}
+                onClick={() => {
+                  setShowAddMatchForm(false);
+                  setEditingMatchId(null);
+                  setNewTeamHome('');
+                  setNewTeamAway('');
+                  setNewFlagHome('');
+                  setNewFlagAway('');
+                  setNewPrize('');
+                  setNewPrizeImage('');
+                }}
                 className="px-4 py-2 bg-[#eceef0] text-[#3e4a3d] font-sans text-xs font-semibold rounded-full hover:bg-[#e0e3e5] cursor-pointer"
               >
                 Cancelar
@@ -150,7 +343,7 @@ export default function AdminPanel({
                 type="submit"
                 className="px-5 py-2 bg-[#006b2c] text-white font-sans text-xs font-bold rounded-full hover:bg-[#005320] shadow-sm cursor-pointer"
               >
-                Salvar Jogo
+                {editingMatchId ? 'Salvar Alterações' : 'Salvar Jogo'}
               </button>
             </div>
           </form>
@@ -241,24 +434,14 @@ export default function AdminPanel({
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-2 justify-end">
-                  {match.status === 'Aberto' && (
+                <div className="flex flex-wrap gap-2 justify-end mt-2">
+                  {match.status !== 'Finalizado' && (
                     <button 
-                      onClick={() => onUpdateMatchStatus(match.id, 'Fechado')}
-                      className="bg-[#555b70] text-white font-sans text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                      onClick={() => handleEditClick(match)}
+                      className="flex-1 bg-[#eceef0] text-[#3e4a3d] hover:bg-[#e0e3e5] font-sans text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Lock className="w-3.5 h-3.5" />
-                      Encerrar Apostas
-                    </button>
-                  )}
-
-                  {match.status === 'Fechado' && (
-                    <button 
-                      onClick={() => onUpdateMatchStatus(match.id, 'Aberto')}
-                      className="bg-[#eceef0] text-[#006b2c] hover:bg-[#006b2c]/10 font-sans text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      Abrir Apostas
+                      <Edit className="w-4 h-4" />
+                      Editar Jogo
                     </button>
                   )}
 
@@ -269,9 +452,9 @@ export default function AdminPanel({
                         setLaunchScoreHome(match.scoreHome || 0);
                         setLaunchScoreAway(match.scoreAway || 0);
                       }}
-                      className="bg-[#006b2c] text-white font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                      className="flex-1 bg-[#006b2c] text-white font-sans text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
-                      <CheckSquare className="w-3.5 h-3.5" />
+                      <CheckSquare className="w-4 h-4" />
                       Lançar Resultado
                     </button>
                   ) : (
@@ -281,9 +464,9 @@ export default function AdminPanel({
                         setLaunchScoreHome(match.scoreHome || 0);
                         setLaunchScoreAway(match.scoreAway || 0);
                       }}
-                      className="bg-[#eceef0] text-[#3e4a3d] hover:bg-[#e0e3e5] font-sans text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                      className="flex-1 bg-[#f2f4f6] text-[#3e4a3d] hover:bg-[#e0e3e5] font-sans text-xs font-semibold px-3 py-2 rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Edit className="w-3.5 h-3.5" />
+                      <Edit className="w-4 h-4" />
                       Retificar Placar
                     </button>
                   )}

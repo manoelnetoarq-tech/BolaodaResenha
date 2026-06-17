@@ -7,6 +7,8 @@ interface AuthScreensProps {
   onLoginSuccess: (name: string, email: string) => void;
 }
 
+import { supabase } from '../lib/supabase';
+
 export default function AuthScreens({ currentView, onChangeView, onLoginSuccess }: AuthScreensProps) {
   // Common states
   const [email, setEmail] = useState('');
@@ -20,18 +22,29 @@ export default function AuthScreens({ currentView, onChangeView, onLoginSuccess 
   const [errorStatus, setErrorStatus] = useState('');
   const [successStatus, setSuccessStatus] = useState('');
 
-  const handleLoginSubmit = (e: FormEvent) => {
+  const handleLoginSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
       setErrorStatus('Por favor, preencha todos os campos!');
       return;
     }
     setErrorStatus('');
-    // Simulate successful login
-    onLoginSuccess(fullName || 'João Silva', email);
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrorStatus('E-mail ou senha inválidos.');
+      return;
+    }
+    
+    // Sucesso
+    onLoginSuccess(data.user?.user_metadata?.full_name || 'Usuário', email);
   };
 
-  const handleRegisterSubmit = (e: FormEvent) => {
+  const handleRegisterSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setErrorStatus('Por favor, preencha todos os campos!');
@@ -42,20 +55,44 @@ export default function AuthScreens({ currentView, onChangeView, onLoginSuccess 
       return;
     }
     setErrorStatus('');
-    setSuccessStatus('Conta cadastrada com sucesso! Redirecionando...');
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        }
+      }
+    });
+
+    if (error) {
+      setErrorStatus(error.message);
+      return;
+    }
+
+    setSuccessStatus('Conta cadastrada com sucesso! Verifique seu e-mail ou faça login.');
     setTimeout(() => {
       setSuccessStatus('');
-      onLoginSuccess(fullName, email);
-    }, 1500);
+      onChangeView('login');
+    }, 2500);
   };
 
-  const handleRecoverySubmit = (e: FormEvent) => {
+  const handleRecoverySubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
       setErrorStatus('Por favor, digite seu e-mail!');
       return;
     }
     setErrorStatus('');
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    
+    if (error) {
+      setErrorStatus('Erro ao enviar e-mail de recuperação.');
+      return;
+    }
+
     setSuccessStatus('Instruções enviadas! Verifique sua caixa de entrada.');
     setTimeout(() => {
       setSuccessStatus('');

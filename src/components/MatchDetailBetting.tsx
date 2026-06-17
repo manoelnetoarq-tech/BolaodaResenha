@@ -23,8 +23,26 @@ export default function MatchDetailBetting({
   const [bettorName, setBettorName] = useState(myExistingPrediction?.userName || currentUser.name);
   const [scoreHome, setScoreHome] = useState(myExistingPrediction?.scoreHome ?? 0);
   const [scoreAway, setScoreAway] = useState(myExistingPrediction?.scoreAway ?? 0);
-  const [betValue, setBetValue] = useState(myExistingPrediction?.betValue ?? 50);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Check time limit (15 mins before match)
+  const parseDateString = (dateStr: string) => {
+    // Expected: "DD/MM/YYYY às HH:MM"
+    const regex = /(\d{2})\/(\d{2})\/(\d{4}) às (\d{2}):(\d{2})/;
+    const m = dateStr.match(regex);
+    if (!m) return null;
+    const [_, day, month, year, hours, mins] = m;
+    return new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(mins));
+  };
+
+  const isBettingOpen = () => {
+    const matchDate = parseDateString(match.dateStr);
+    if (!matchDate) return true; // If parsing fails, default to open
+    const diffInMinutes = (matchDate.getTime() - new Date().getTime()) / (1000 * 60);
+    return diffInMinutes >= 15;
+  };
+
+  const isFormOpen = match.status === 'Aberto' && isBettingOpen();
 
   const handleIncrementHome = () => setScoreHome(prev => prev + 1);
   const handleDecrementHome = () => setScoreHome(prev => Math.max(0, prev - 1));
@@ -41,7 +59,6 @@ export default function MatchDetailBetting({
       userName: bettorName,
       scoreHome,
       scoreAway,
-      betValue,
       userAvatar: currentUser.avatar
     });
 
@@ -154,8 +171,8 @@ export default function MatchDetailBetting({
         </div>
       </article>
 
-      {/* Betting Input Form (Only available if status is 'Aberto') */}
-      {match.status === 'Aberto' ? (
+      {/* Betting Input Form */}
+      {isFormOpen ? (
         <form 
           onSubmit={handleSubmit}
           className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col gap-5 border border-[#eceef0]/50"
@@ -170,6 +187,23 @@ export default function MatchDetailBetting({
           </div>
 
           <div className="flex flex-col gap-4 max-w-sm mx-auto w-full">
+            {/* Prize Display */}
+            {(match.prize || match.prizeImage) && (
+              <div className="bg-[#fff9e6] border border-[#fed01b] rounded-xl p-3 flex items-start gap-3 shadow-[0_2px_8px_rgba(254,208,27,0.15)] mb-1">
+                {match.prizeImage ? (
+                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#fed01b]/50 bg-white shrink-0 mt-0.5">
+                    <img src={match.prizeImage} alt="Prize" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  </div>
+                ) : (
+                  <Trophy className="w-5 h-5 text-[#6f5900] shrink-0 mt-0.5" />
+                )}
+                <div className="flex flex-col flex-1 justify-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#6f5900]">Prêmios da Rodada</span>
+                  {match.prize && <span className="text-xs font-semibold text-[#3e4a3d] mt-0.5">{match.prize}</span>}
+                </div>
+              </div>
+            )}
+
             {/* Participant Name Input */}
             <div className="flex flex-col gap-1.5">
               <label className="font-sans text-xs font-semibold text-[#3e4a3d] ml-1" htmlFor="bettor-name">
@@ -189,24 +223,6 @@ export default function MatchDetailBetting({
                   required
                 />
               </div>
-            </div>
-
-            {/* Simulated Bet Value input */}
-            <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-semibold text-[#3e4a3d] ml-1" htmlFor="bet-value">
-                Valor do palpite (Créditos / R$)
-              </label>
-              <select
-                id="bet-value"
-                className="w-full h-12 bg-[#f2f4f6] border border-[#eceef0] rounded-2xl px-4 font-sans text-sm text-[#191c1e] focus:border-[#006b2c] focus:ring-2 focus:ring-[#006b2c]/10 transition-colors duration-200 outline-none"
-                value={betValue}
-                onChange={(e) => setBetValue(Number(e.target.value))}
-              >
-                <option value={10}>R$ 10 (Módico)</option>
-                <option value={20}>R$ 20 (Para diversão)</option>
-                <option value={50}>R$ 50 (Bolão principal)</option>
-                <option value={100}>R$ 100 (Resenha séria)</option>
-              </select>
             </div>
 
             {/* Scores Incrementor Controls */}
@@ -284,9 +300,11 @@ export default function MatchDetailBetting({
           </div>
         </form>
       ) : (
-        <div className="bg-[#eceef0]/50 border border-[#eceef0] rounded-2xl p-5 text-center select-none">
-          <p className="font-poppins font-medium text-sm text-[#3e4a3d]">
-            Palpites para este jogo já estão encerrados para novas participações. 🔒
+        <div className="bg-[#ba1a1a]/5 border border-[#ba1a1a]/20 rounded-2xl p-5 text-center select-none">
+          <p className="font-poppins font-semibold text-sm text-[#ba1a1a]">
+            {match.status === 'Aberto' && !isBettingOpen() 
+              ? 'Tempo limite atingido. Palpites encerram 15 minutos antes do jogo! ⏰'
+              : 'Palpites para este jogo já estão encerrados para novas participações. 🔒'}
           </p>
         </div>
       )}
@@ -333,11 +351,6 @@ export default function MatchDetailBetting({
                           </span>
                         )}
                       </span>
-                      {pred.betValue && (
-                        <span className="text-[10px] font-mono text-[#6e7b6c]">
-                          Banca: R$ {pred.betValue}
-                        </span>
-                      )}
                     </div>
                   </div>
 

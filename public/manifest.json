@@ -1,0 +1,16 @@
+{
+  "name": "Selman'sBet",
+  "short_name": "Selman'sBet",
+  "description": "O Selman'sBet é o aplicativo de bolão oficial da família, projetado com uma interface minimalista, sofisticada e de alta performance para palpites esportivos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006b2c",
+  "icons": [
+    {
+      "src": "https://qdqsjhrxeuvxdaguyykj.supabase.co/storage/v1/object/public/SelmansBet/ico-sb.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}

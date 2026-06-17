@@ -4,9 +4,10 @@ import { Screen } from '../types';
 interface BottomNavBarProps {
   currentScreen: Screen;
   onNavigate: (screen: Screen) => void;
+  isAdmin?: boolean;
 }
 
-export default function BottomNavBar({ currentScreen, onNavigate }: BottomNavBarProps) {
+export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: BottomNavBarProps) {
   const isInicioActive = ['home', 'match-details'].includes(currentScreen);
   const isRankingActive = currentScreen === 'ranking';
   const isAdminActive = currentScreen === 'admin';
@@ -40,17 +41,19 @@ export default function BottomNavBar({ currentScreen, onNavigate }: BottomNavBar
       </button>
 
       {/* Tab: Admin */}
-      <button
-        onClick={() => onNavigate('admin')}
-        className={`flex flex-col items-center justify-center transition-all active:scale-90 duration-150 py-1 px-4 rounded-full ${
-          isAdminActive
-            ? 'bg-[#fed01b] text-[#6f5900] font-bold shadow-sm'
-            : 'text-[#3e4a3d] hover:bg-[#eceef0]/60'
-        }`}
-      >
-        <Settings className={`w-5 h-5 ${isAdminActive ? 'stroke-[2.5]' : 'stroke-[2]'}`} />
-        <span className="text-[11px] font-sans font-medium mt-1">Admin</span>
-      </button>
+      {isAdmin && (
+        <button
+          onClick={() => onNavigate('admin')}
+          className={`flex flex-col items-center justify-center transition-all active:scale-90 duration-150 py-1 px-4 rounded-full ${
+            isAdminActive
+              ? 'bg-[#fed01b] text-[#6f5900] font-bold shadow-sm'
+              : 'text-[#3e4a3d] hover:bg-[#eceef0]/60'
+          }`}
+        >
+          <Settings className={`w-5 h-5 ${isAdminActive ? 'stroke-[2.5]' : 'stroke-[2]'}`} />
+          <span className="text-[11px] font-sans font-medium mt-1">Admin</span>
+        </button>
+      )}
     </nav>
   );
 }

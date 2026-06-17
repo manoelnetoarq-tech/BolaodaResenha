@@ -11,6 +11,8 @@ export interface Match {
   status: MatchStatus;
   scoreHome?: number;
   scoreAway?: number;
+  prize?: string;
+  prizeImage?: string;
 }
 
 export interface Prediction {

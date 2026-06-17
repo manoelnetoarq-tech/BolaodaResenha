@@ -1,9 +1,10 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef, ChangeEvent } from 'react';
 import { 
   User, Mail, Camera, Save, Lock, ArrowLeft, ArrowRight, LogOut, Award, 
-  Settings, Key, ShieldAlert, CheckCircle, Clock, ChevronRight, BarChart, Trophy 
+  Settings, Key, ShieldAlert, CheckCircle, Clock, ChevronRight, BarChart, Trophy, Upload
 } from 'lucide-react';
 import { UserProfile, Match, Prediction, Screen } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface ProfileEditProps {
   currentUser: UserProfile;
@@ -28,6 +29,8 @@ export default function ProfileEdit({
   const [editName, setEditName] = useState(currentUser.name);
   const [editEmail, setEditEmail] = useState(currentUser.email);
   const [editAvatar, setEditAvatar] = useState(currentUser.avatar);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Password fields state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -64,6 +67,35 @@ export default function ProfileEdit({
       setConfirmPassword('');
       setProfileView('overview');
     }, 2000);
+  };
+
+  const handleFileUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    try {
+      setIsUploading(true);
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      
+      setEditAvatar(data.publicUrl);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Erro ao enviar imagem. Verifique se o tamanho é menor que 5MB.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Only predictions for the current logged-in user
@@ -290,29 +322,53 @@ export default function ProfileEdit({
 
           {/* Avatar edit slider */}
           <div className="flex flex-col items-center gap-3 mb-6 w-full">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#eceef0] shadow">
+            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#eceef0] shadow relative">
               <img 
                 src={editAvatar} 
                 alt="Avatar" 
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${isUploading ? 'opacity-50' : ''}`}
                 referrerPolicy="no-referrer"
               />
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-[#006b2c] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
             </div>
-            <span className="text-[11px] font-sans text-[#6e7b6c] mb-1">Selecione seu Avatar da Resenha:</span>
             
-            <div className="flex gap-2 justify-center flex-wrap">
-              {SAMPLE_AVATARS.map((url, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setEditAvatar(url)}
-                  className={`w-10 h-10 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
-                    editAvatar === url ? 'border-[#006b2c] scale-110 shadow-sm' : 'border-transparent opacity-75'
-                  }`}
-                >
-                  <img src={url} alt={`Avatar ${index}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                </button>
-              ))}
+            <div className="flex flex-col items-center w-full gap-2 mt-1">
+              <input 
+                type="file" 
+                accept="image/*" 
+                hidden 
+                ref={fileInputRef} 
+                onChange={handleFileUpload}
+              />
+              <button
+                type="button"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-[#f2f4f6] text-[#191c1e] border border-[#eceef0] hover:bg-[#eceef0] px-4 py-2 rounded-full font-sans text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                {isUploading ? 'Enviando...' : 'Enviar Nova Foto'}
+              </button>
+
+              <span className="text-[11px] font-sans text-[#6e7b6c] mt-2 mb-1">Ou escolha um Avatar da Resenha:</span>
+              <div className="flex gap-2 justify-center flex-wrap">
+                {SAMPLE_AVATARS.map((url, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setEditAvatar(url)}
+                    className={`w-10 h-10 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
+                      editAvatar === url ? 'border-[#006b2c] scale-110 shadow-sm' : 'border-transparent opacity-75'
+                    }`}
+                  >
+                    <img src={url} alt={`Avatar ${index}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
