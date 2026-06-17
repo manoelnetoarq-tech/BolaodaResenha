@@ -123,3 +123,12 @@ on storage.objects for insert with check ( bucket_id = 'prizes' and auth.role() 
 
 create policy "Anyone can update a prize image." 
 on storage.objects for update with check ( bucket_id = 'prizes' and auth.role() = 'authenticated' );
+
+-- ==========================================
+-- SCRIPT DE ADMINISTRAÇÃO
+-- ==========================================
+-- Rodar este script manualmente no SQL Editor para dar acesso de administrador (Gestor) a um e-mail específico:
+-- (Certifique-se de que o usuário já se cadastrou no app antes de rodar isso)
+update public.profiles
+set role = 'Admin da Família'
+where email = 'manoel@studiologin.com.br';

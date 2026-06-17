@@ -189,18 +189,39 @@ export default function MatchDetailBetting({
           <div className="flex flex-col gap-4 max-w-sm mx-auto w-full">
             {/* Prize Display */}
             {(match.prize || match.prizeImage) && (
-              <div className="bg-[#fff9e6] border border-[#fed01b] rounded-xl p-3 flex items-start gap-3 shadow-[0_2px_8px_rgba(254,208,27,0.15)] mb-1">
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#fed01b] shadow-[0_4px_16px_rgba(254,208,27,0.25)] mb-2 group">
                 {match.prizeImage ? (
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#fed01b]/50 bg-white shrink-0 mt-0.5">
-                    <img src={match.prizeImage} alt="Prize" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <div className="w-full h-40 sm:h-48 relative bg-[#fff9e6]">
+                    <img 
+                      src={match.prizeImage} 
+                      alt="Prize" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+                      referrerPolicy="no-referrer" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 flex flex-col z-10">
+                      <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#fed01b] drop-shadow-md">
+                        <Trophy className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Prêmio em Disputa
+                      </span>
+                      {match.prize && (
+                        <span className="text-base sm:text-lg font-bold text-white mt-1 drop-shadow-lg leading-tight">
+                          {match.prize}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <Trophy className="w-5 h-5 text-[#6f5900] shrink-0 mt-0.5" />
+                  <div className="bg-[#fff9e6] p-4 flex items-center gap-4">
+                    <div className="bg-[#fed01b]/20 p-3 rounded-full shrink-0">
+                      <Trophy className="w-6 h-6 text-[#6f5900]" />
+                    </div>
+                    <div className="flex flex-col flex-1 justify-center">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#6f5900]">Prêmio em Disputa</span>
+                      {match.prize && <span className="text-sm font-bold text-[#3e4a3d] mt-0.5">{match.prize}</span>}
+                    </div>
+                  </div>
                 )}
-                <div className="flex flex-col flex-1 justify-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#6f5900]">Prêmios da Rodada</span>
-                  {match.prize && <span className="text-xs font-semibold text-[#3e4a3d] mt-0.5">{match.prize}</span>}
-                </div>
               </div>
             )}
 
