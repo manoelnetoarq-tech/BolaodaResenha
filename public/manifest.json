@@ -1,7 +1,7 @@
 {
-  "name": "Selman's Bet",
-  "short_name": "Selman's Bet",
-  "description": "O Selman's Bet é o aplicativo oficial para palpites esportivos com uma interface minimalista e de alta performance.",
+  "name": "Bolão da Resenha",
+  "short_name": "Bolão da Resenha",
+  "description": "O bolão oficial dos amigos para torcer, palpitar e zoar a galera com muita resenha.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
