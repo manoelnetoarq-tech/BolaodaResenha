@@ -164,6 +164,9 @@ create table if not exists public.chat_messages (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- Suporte a respostas
+alter table public.chat_messages add column if not exists reply_to_id uuid references public.chat_messages(id) on delete set null;
+
 -- Habilitar RLS
 alter table public.chat_messages enable row level security;
 

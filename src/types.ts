@@ -42,6 +42,14 @@ export interface ChatMessage {
   userId: string;
   content: string;
   createdAt: string;
+  replyToId?: string;
+  replyToMessage?: {
+    id: string;
+    content: string;
+    profiles?: {
+      name: string;
+    };
+  };
   profiles?: {
     name: string;
     avatar: string;
