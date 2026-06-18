@@ -106,8 +106,8 @@ export default function AuthScreens({ currentView, onChangeView, onLoginSuccess 
       {/* Brand Logo Header Block */}
       <div className="text-center mb-6 flex flex-col items-center">
         <img 
-          src="https://qdqsjhrxeuvxdaguyykj.supabase.co/storage/v1/object/public/SelmansBet/Selmansbet%20-%20Transparente.png" 
-          alt="Selman'sBet Logo" 
+          src="/Logo.png" 
+          alt="Bolão da Resenha Logo" 
           className="h-28 md:h-36 w-auto object-contain mb-4"
           referrerPolicy="no-referrer"
         />

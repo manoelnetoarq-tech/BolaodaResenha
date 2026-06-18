@@ -175,7 +175,7 @@ export default function AdminPanel({
         <div className="flex flex-col">
           <span className="font-poppins font-semibold text-xs text-[#191c1e]">Acesso Administrativo</span>
           <span className="font-sans text-[11px] text-[#3e4a3d] mt-0.5">
-            Você está acessando as ferramentas de moderação do Selman'sBet. Aqui você pode cadastrar jogos, alterar status de apostas, lançar placares reais e remover palpites incorretos.
+            Você está acessando as ferramentas de moderação do Bolão da Resenha. Aqui você pode cadastrar jogos, alterar status de apostas, lançar placares reais e remover palpites incorretos.
           </span>
         </div>
       </div>
