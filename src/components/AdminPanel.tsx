@@ -1,7 +1,8 @@
 import { useState, FormEvent, useRef, ChangeEvent } from 'react';
-import { PlusCircle, ArrowRight, Edit, RefreshCw, CheckSquare, Trash2, Calendar, Lock, ShieldAlert, Upload, BellRing } from 'lucide-react';
+import { PlusCircle, ArrowRight, Edit, RefreshCw, CheckSquare, Trash2, Calendar, Lock, ShieldAlert, Upload, BellRing, Bell } from 'lucide-react';
 import { Match, Prediction, MatchStatus } from '../types';
 import { supabase } from '../lib/supabase';
+import { sendLocalTestNotification } from '../lib/push';
 
 interface AdminPanelProps {
   matches: Match[];
@@ -283,6 +284,16 @@ export default function AdminPanel({
             {isSendingPush ? 'Enviando...' : 'Disparar para todos os usuários'}
           </button>
         </form>
+        
+        <div className="pt-3 border-t border-[#f2f4f6]">
+          <button 
+            onClick={sendLocalTestNotification}
+            className="w-full bg-[#f2f4f6] hover:bg-[#eceef0] text-[#3e4a3d] font-sans text-xs font-semibold py-2.5 rounded-xl transition-colors cursor-pointer border border-[#eceef0]"
+          >
+            Disparar Notificação Local de Teste
+          </button>
+        </div>
+      </section>
       </section>
 
       {/* Primary Action Panel */}

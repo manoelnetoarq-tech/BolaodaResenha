@@ -167,8 +167,23 @@ create table if not exists public.chat_messages (
 -- Suporte a respostas
 alter table public.chat_messages add column if not exists reply_to_id uuid references public.chat_messages(id) on delete set null;
 
+-- Tabela de Inscrições Push (Notificações)
+create table if not exists public.push_subscriptions (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  subscription jsonb not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  constraint unique_user_sub unique(user_id)
+);
+
 -- Habilitar RLS
 alter table public.chat_messages enable row level security;
+alter table public.push_subscriptions enable row level security;
+
+-- Políticas de segurança
+-- Push Subscriptions: usuário pode gerenciar a própria, admin pode ver todas
+create policy "Users can manage own subscriptions" on public.push_subscriptions for all using (auth.uid() = user_id);
+create policy "Admins can view all" on public.push_subscriptions for select using (true);
 
 -- Políticas de segurança: todos veem, apenas logados enviam
 create policy "Chat messages viewable by everyone" on public.chat_messages for select using (true);

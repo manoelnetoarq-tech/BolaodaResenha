@@ -1,11 +1,12 @@
 import { useState, useEffect, FormEvent, useRef, ChangeEvent } from 'react';
 import { 
-  User, Mail, Camera, Save, Lock, ArrowLeft, LogOut, Award, 
-  Key, ShieldAlert, CheckCircle, Clock, ChevronRight, BarChart, Trophy, Upload,
-  Bell, BellOff
+  User, Mail, Camera, Save, Lock, ArrowLeft, ArrowRight, LogOut, Award, 
+  Settings, Key, ShieldAlert, CheckCircle, Clock, ChevronRight, BarChart, Trophy, Upload,
+  Bell, BellRing, BellOff
 } from 'lucide-react';
 import { UserProfile, Match, Prediction, Screen } from '../types';
 import { supabase } from '../lib/supabase';
+import { isPushEnabled, subscribeToPushNotifications, unsubscribeFromPushNotifications } from '../lib/push';
 
 interface ProfileEditProps {
   currentUser: UserProfile;
@@ -39,117 +40,20 @@ export default function ProfileEdit({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passMessage, setPassMessage] = useState('');
 
-  // Push Notifications State
-  const [isPushEnabled, setIsPushEnabled] = useState(false);
-  const VAPID_PUBLIC_KEY = 'BDwqgVAKA3xaxShVHrrtI9ItMF1Oh_E4iIWg9lmK3jSZOkqdxeQzM8I2oyAJ9o5QplyXgZou_CqOiKX49gWeXBc';
+  // Push notifications state
+  const [pushEnabled, setPushEnabled] = useState(false);
 
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      navigator.serviceWorker.ready.then(registration => {
-        registration.pushManager.getSubscription().then(subscription => {
-          setIsPushEnabled(!!subscription);
-        });
-      });
-    }
+    isPushEnabled().then(setPushEnabled);
   }, []);
 
-  const urlBase64ToUint8Array = (base64String: string) => {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  };
-
   const handleTogglePush = async () => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      alert('Seu navegador ou dispositivo não suporta notificações Push (Ex: iPhone antigo ou sem PWA instalado).');
-      return;
-    }
-
-    try {
-      // No iOS Safari, a requisição de permissão DEVE ser a primeira coisa, antes de qualquer "await"
-      let permission = Notification.permission;
-      if (!isPushEnabled && permission !== 'granted') {
-        permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-          alert('Permissão negada! Você precisa permitir as notificações nas configurações do seu navegador ou aparelho.');
-          return;
-        }
-      }
-
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        alert('Erro: Você precisa estar logado para ativar notificações.');
-        return;
-      }
-
-      // Em vez de usar .ready (que pode travar), garantimos o registro explicitamente
-      let registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) {
-        registration = await navigator.serviceWorker.register('/sw.js');
-      }
-
-      if (!registration) {
-        alert('Erro: Service Worker não pôde ser registrado. O seu navegador pode estar bloqueando.');
-        return;
-      }
-
-      // Aguarda o SW ficar ativo se estiver instalando
-      if (registration.installing) {
-        await new Promise(resolve => {
-          registration!.installing!.addEventListener('statechange', (e: any) => {
-            if (e.target.state === 'activated') resolve(true);
-          });
-        });
-      }
-
-      if (isPushEnabled) {
-        // Unsubscribe
-        const subscription = await registration.pushManager.getSubscription();
-        if (subscription) {
-          await subscription.unsubscribe();
-          await supabase
-            .from('push_subscriptions')
-            .delete()
-            .eq('endpoint', subscription.endpoint);
-        }
-        setIsPushEnabled(false);
-      } else {
-        // Subscribe
-        let subscription = await registration.pushManager.getSubscription();
-        if (!subscription) {
-          subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-          });
-        }
-
-        const subJson = subscription.toJSON();
-        
-        // Upsert if the user logs in from same device but different account, or just insert
-        const { error } = await supabase.from('push_subscriptions').upsert({
-          user_id: user.id,
-          endpoint: subJson.endpoint,
-          p256dh: subJson.keys?.p256dh,
-          auth: subJson.keys?.auth
-        }, { onConflict: 'user_id, endpoint' });
-        
-        if (error) {
-          console.error(error);
-          alert('Erro no Banco (A tabela push_subscriptions existe?): ' + error.message);
-          return;
-        }
-
-        setIsPushEnabled(true);
-        alert('Notificações ativadas com sucesso!');
-      }
-    } catch (error: any) {
-      console.error('Error toggling push:', error);
-      alert('Erro ao configurar notificações: ' + (error.message || 'Erro Desconhecido'));
+    if (pushEnabled) {
+      const success = await unsubscribeFromPushNotifications();
+      if (success) setPushEnabled(false);
+    } else {
+      const success = await subscribeToPushNotifications();
+      if (success) setPushEnabled(true);
     }
   };
 
@@ -362,6 +266,25 @@ export default function ProfileEdit({
           {/* Actions Settings Section */}
           <section className="flex flex-col gap-2 pt-2">
             <h3 className="font-poppins font-bold text-sm text-[#191c1e] px-1 mb-1">Ações de Conta</h3>
+
+            <div className="w-full bg-white border border-[#eceef0] p-3.5 rounded-2xl flex items-center justify-between shadow-sm transition-colors mb-1">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${pushEnabled ? 'bg-[#006b2c]/15 text-[#006b2c]' : 'bg-[#8e9894]/10 text-[#8e9894]'}`}>
+                  {pushEnabled ? <BellRing className="w-5 h-5" /> : <Bell className="w-5 h-5" />}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-sans text-sm font-semibold text-[#191c1e]">Receber Notificações</span>
+                  <span className="text-[10px] text-[#6e7b6c]">Alertas de início e resultados</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={handleTogglePush}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${pushEnabled ? 'bg-[#006b2c]' : 'bg-[#bdcaba]'}`}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${pushEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+              </button>
+            </div>
             
             {/* Notifications Toggle */}
             <button 
