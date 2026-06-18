@@ -3,6 +3,7 @@ import { PlusCircle, ArrowRight, Edit, RefreshCw, CheckSquare, Trash2, Calendar,
 import { Match, Prediction, MatchStatus } from '../types';
 import { supabase } from '../lib/supabase';
 import { sendLocalTestNotification } from '../lib/push';
+import { parseDateStr } from '../App';
 
 interface AdminPanelProps {
   matches: Match[];
@@ -472,7 +473,7 @@ export default function AdminPanel({
         </h3>
 
         <div className="flex flex-col gap-4">
-          {matches.map((match) => (
+          {[...matches].sort((a, b) => parseDateStr(a.dateStr) - parseDateStr(b.dateStr)).map((match) => (
             <div 
               key={match.id}
               className="bg-white rounded-2xl p-4 shadow-[0_5px_15px_rgba(15,23,42,0.04)] flex flex-col gap-4 border border-[#eceef0]/60"

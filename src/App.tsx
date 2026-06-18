@@ -17,6 +17,17 @@ import { Trophy, Compass, Star, Flame, Award, ShieldAlert } from 'lucide-react';
 
 import { supabase } from './lib/supabase';
 
+export const parseDateStr = (dateStr: string) => {
+  try {
+    const [datePart, timePart] = dateStr.split(' às ');
+    const [day, month, year] = datePart.split('/');
+    const [hour, minute] = timePart.split(':');
+    return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)).getTime();
+  } catch (e) {
+    return 0;
+  }
+};
+
 export default function App() {
   // 1. Core Persistent States
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -57,6 +68,27 @@ export default function App() {
       loadData();
     }
   }, [isLoggedIn]);
+
+  // Automated live match status checker
+  useEffect(() => {
+    if (!isLoggedIn || matches.length === 0) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      matches.forEach(m => {
+        if (m.status === 'Aberto') {
+          const mTime = parseDateStr(m.dateStr);
+          if (mTime > 0 && now >= mTime) {
+            supabase.from('matches').update({ status: 'Ao Vivo' }).eq('id', m.id).then(({ error }) => {
+              if (!error) loadData();
+            });
+          }
+        }
+      });
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [matches, isLoggedIn]);
 
   useEffect(() => {
     const channel = supabase
@@ -349,17 +381,6 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'home':
-        const parseDateStr = (dateStr: string) => {
-          try {
-            const [datePart, timePart] = dateStr.split(' às ');
-            const [day, month, year] = datePart.split('/');
-            const [hour, minute] = timePart.split(':');
-            return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)).getTime();
-          } catch (e) {
-            return 0;
-          }
-        };
-
         const sortedMatches = [...matches].sort((a, b) => {
           if (a.status === 'Ao Vivo' && b.status !== 'Ao Vivo') return -1;
           if (a.status !== 'Ao Vivo' && b.status === 'Ao Vivo') return 1;
@@ -367,36 +388,33 @@ export default function App() {
         });
 
         const liveMatches = sortedMatches.filter(m => m.status === 'Ao Vivo');
+        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo');
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
             {liveMatches.length > 0 && (
-              <div className="relative overflow-hidden bg-gradient-to-r from-[#e01424] to-[#ff2b3d] text-white rounded-2xl md:rounded-[24px] flex items-center shadow-md border border-[#ff4a5a]/30 -mx-2 md:mx-0 mt-2">
-                <div className="flex items-center gap-2 pr-6 pl-4 py-2.5 md:py-3 z-10 bg-gradient-to-r from-[#e01424] via-[#e01424] to-transparent font-poppins font-bold uppercase text-xs md:text-sm tracking-wider">
-                  <span className="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse"></span>
-                  <span className="hidden md:inline">Ao Vivo</span>
-                  <span className="md:hidden">Live</span>
-                </div>
-                <div className="flex-1 overflow-hidden relative h-10">
-                  <div className="absolute whitespace-nowrap animate-marquee flex items-center gap-8 md:gap-12 h-full top-0">
-                    {liveMatches.map((m, idx) => (
-                      <span key={idx} className="font-sans font-semibold text-sm md:text-base flex items-center gap-2">
-                        <span>{m.teamHome}</span>
-                        <span className="bg-black/20 px-2 py-0.5 rounded font-bold">{m.scoreHome ?? 0} x {m.scoreAway ?? 0}</span>
-                        <span>{m.teamAway}</span>
-                      </span>
-                    ))}
-                    {/* Duplicate for smooth continuous scroll on wide screens */}
-                    {liveMatches.length < 3 && liveMatches.map((m, idx) => (
-                      <span key={`dup-${idx}`} className="font-sans font-semibold text-sm md:text-base flex items-center gap-2 hidden md:flex">
-                        <span>{m.teamHome}</span>
-                        <span className="bg-black/20 px-2 py-0.5 rounded font-bold">{m.scoreHome ?? 0} x {m.scoreAway ?? 0}</span>
-                        <span>{m.teamAway}</span>
-                      </span>
+              <section className="flex flex-col items-center justify-center w-full mt-2">
+                <div className="w-full max-w-md animate-fade-in">
+                  <h3 className="text-center font-poppins font-bold text-[#e01424] mb-3 uppercase tracking-wider text-sm flex items-center justify-center gap-2 bg-[#ff2b3d]/10 py-1.5 px-4 rounded-full border border-[#ff4a5a]/20 w-max mx-auto shadow-sm">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#e01424] animate-pulse"></span>
+                    Partida Ao Vivo
+                  </h3>
+                  <div className="flex flex-col gap-4">
+                    {liveMatches.map((m) => (
+                      <MatchCard 
+                        key={m.id}
+                        match={m}
+                        predictions={predictions}
+                        currentUserEmail={currentUser.email}
+                        onSelect={(mid) => {
+                          setSelectedMatchId(mid);
+                          setCurrentScreen('match-details');
+                        }}
+                      />
                     ))}
                   </div>
                 </div>
-              </div>
+              </section>
             )}
 
             {/* High Contrast Banner Welcome Section */}
@@ -453,7 +471,7 @@ export default function App() {
 
               {/* Horizontal scroll container on mobile, fits beautiful card list */}
               <div className="flex md:grid md:grid-cols-2 gap-4 overflow-x-auto no-scrollbar py-2 shrink-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
-                {sortedMatches.map((match) => (
+                {scheduledMatches.map((match) => (
                   <MatchCard 
                     key={match.id}
                     match={match}
