@@ -32,7 +32,7 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
         onClick={() => onNavigate('home')}
         className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
       >
-        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isInicioActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#005320] to-[#00873a] text-white shadow-[0_8px_16px_rgba(0,107,44,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
+        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isInicioActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_16px_rgba(0,39,118,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
           <Home className={`w-6 h-6 transition-transform duration-300 ${isInicioActive ? 'scale-110' : ''}`} />
         </div>
       </button>
@@ -42,7 +42,7 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
         onClick={() => onNavigate('ranking')}
         className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
       >
-        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isRankingActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#005320] to-[#00873a] text-white shadow-[0_8px_16px_rgba(0,107,44,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
+        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isRankingActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_16px_rgba(0,39,118,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
           <Trophy className={`w-6 h-6 transition-transform duration-300 ${isRankingActive ? 'scale-110' : ''}`} />
         </div>
       </button>
@@ -53,7 +53,7 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
           onClick={() => onNavigate('admin')}
           className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
         >
-          <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isAdminActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#005320] to-[#00873a] text-white shadow-[0_8px_16px_rgba(0,107,44,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
+          <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isAdminActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_16px_rgba(0,39,118,0.4)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
             <Settings className={`w-6 h-6 transition-transform duration-300 ${isAdminActive ? 'scale-110' : ''}`} />
           </div>
         </button>
