@@ -129,8 +129,8 @@ export default function MatchDetailBetting({
               </span>
             )}
             {match.status === 'Finalizado' && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#6e748a]/10 text-[#555b70] font-sans text-[10px] font-bold flex gap-1.5 border border-[#6e748a]/20">
-                <CheckCircle className="w-3 h-3 text-[#555b70]" /> Finalizado
+              <span className="bg-[#f2f4f6] text-[#3e4a3d] font-sans text-xs font-medium px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-[#eceef0]">
+                <CheckCircle className="w-3 h-3 text-[#555b70]" /> Partida Encerrada
               </span>
             )}
           </div>

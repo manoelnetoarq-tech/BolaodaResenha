@@ -217,7 +217,7 @@ export default function ProfileEdit({
                         ) : (
                           <div className="bg-[#fed01b]/10 text-[#735c00] px-2 py-0.5 rounded-full font-sans text-[10px] font-bold flex items-center gap-1 border border-[#fed01b]/20">
                             <CheckCircle className="w-3 h-3" />
-                            Finalizado
+                            Partida Encerrada
                           </div>
                         )}
                       </div>

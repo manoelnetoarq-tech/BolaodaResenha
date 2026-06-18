@@ -54,7 +54,7 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
         {match.status === 'Finalizado' && (
           <span className="bg-[#6e748a]/10 text-[#555b70] font-sans text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-[#6e748a]/20">
             <CheckCircle className="w-3.5 h-3.5 text-[#555b70]" />
-            Finalizado
+            Partida Encerrada
           </span>
         )}
 
