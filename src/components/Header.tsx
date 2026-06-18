@@ -28,7 +28,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
       case 'profile':
         return 'Meu Perfil';
       default:
-        return "Bolão da Resenha";
+        return "Selman's Bet";
     }
   };
 
@@ -51,8 +51,8 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
             className="flex items-center cursor-pointer active:scale-98 transition-transform"
           >
             <img 
-              src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/BolaodaResenha/Logo.png" 
-              alt="Bolão da Resenha Logo" 
+              src="/Logo.png" 
+              alt="Selman's Bet Logo" 
               className="h-10 md:h-12 w-auto object-contain"
               referrerPolicy="no-referrer"
             />

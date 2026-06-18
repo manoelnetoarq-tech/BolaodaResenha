@@ -1,7 +1,7 @@
 {
-  "name": "Bolão da Resenha",
-  "short_name": "Bolão da Resenha",
-  "description": "O Bolão da Resenha é o aplicativo oficial para palpites esportivos com uma interface minimalista e de alta performance.",
+  "name": "Selman's Bet",
+  "short_name": "Selman's Bet",
+  "description": "O Selman's Bet é o aplicativo oficial para palpites esportivos com uma interface minimalista e de alta performance.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
