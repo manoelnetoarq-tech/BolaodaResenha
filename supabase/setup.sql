@@ -7,7 +7,7 @@ create table if not exists public.profiles (
   email text not null,
   name text,
   avatar text,
-  role text default 'Membro da Família',
+  role text default 'Membro da Resenha',
   total_bets integer default 0,
   total_points integer default 0,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
@@ -130,5 +130,5 @@ on storage.objects for update with check ( bucket_id = 'prizes' and auth.role() 
 -- Rodar este script manualmente no SQL Editor para dar acesso de administrador (Gestor) a um e-mail específico:
 -- (Certifique-se de que o usuário já se cadastrou no app antes de rodar isso)
 update public.profiles
-set role = 'Admin da Família'
-where email = 'manoel@studiologin.com.br';
+set role = 'Admin da Resenha'
+where email = 'manoel.neto.arq@gmail.com';

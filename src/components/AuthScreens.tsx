@@ -115,7 +115,7 @@ export default function AuthScreens({ currentView, onChangeView, onLoginSuccess 
         {/* State conditional greetings */}
         {currentView === 'login' && (
           <p className="font-sans text-xs text-[#3e4a3d] mt-1.5 font-medium">
-            O bolão oficial da família. A diversão começa aqui!
+            O bolão oficial da resenha. A diversão começa aqui!
           </p>
         )}
         {currentView === 'register' && (
@@ -361,7 +361,7 @@ export default function AuthScreens({ currentView, onChangeView, onLoginSuccess 
                 <input 
                   id="rec-email"
                   type="email"
-                  placeholder="exemplo@familia.com"
+                  placeholder="exemplo@email.com"
                   className="w-full pl-11 pr-4 py-3 bg-[#f2f4f6] border border-[#eceef0] rounded-2xl font-sans text-xs text-[#191c1e] placeholder:text-[#3e4a3d]/40 focus:ring-2 focus:ring-[#006b2c]/10 focus:border-[#006b2c] transition-all outline-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

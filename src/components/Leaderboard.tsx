@@ -34,7 +34,7 @@ export default function Leaderboard({ rankingData, currentUser }: LeaderboardPro
           <Trophy className="w-10 h-10 stroke-[2] fill-[#fed01b]/45" />
         </div>
         <h2 className="font-poppins font-bold text-2xl md:text-3xl text-[#191c1e]">
-          Ranking da Família
+          Ranking da Resenha
         </h2>
         <p className="font-sans text-sm text-[#3e4a3d] mt-1">
           Acompanhe quem está liderando os palpites do bolão!

@@ -24,7 +24,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
       case 'admin':
         return 'Área do Admin';
       case 'ranking':
-        return 'Ranking da Família';
+        return 'Ranking da Resenha';
       case 'profile':
         return 'Meu Perfil';
       default:

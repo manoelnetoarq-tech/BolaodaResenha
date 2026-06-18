@@ -94,7 +94,7 @@ export const INITIAL_USER_PROFILE: UserProfile = {
   name: 'João Silva',
   email: 'manoel.neto.arq@gmail.com',
   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDbV5tOY30U-u-YyaMBbsUeF_vN4p331pN0XTrZpSsuFjYpkBMrNuM7HRSPFMm6eRc009OhBwpnbQNVO1k31OukKQkTSGTKPvMGWIxRNBG1kldZztOkpyjupFpAwGTuQTTBFa1MGAA4W6U8oRFQWbXs_nqVZDT01JFqHZwBMSc44HfJ_WgoVM_qABvKF4GBxiSb3BkQwEH6HaMYjhDqu208k-zMOUeiCOcJ5Q-UgT-ETvDJIDquG-aEW_FyD15Zt32WH56l_KonuG8',
-  role: 'Membro da Família',
+  role: 'Membro da Resenha',
   totalBets: 42,
   totalPoints: 185
 };

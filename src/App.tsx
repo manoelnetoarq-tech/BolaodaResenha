@@ -64,7 +64,7 @@ export default function App() {
         name: data.name || '',
         email: data.email || '',
         avatar: data.avatar || INITIAL_USER_PROFILE.avatar,
-        role: data.role || 'Membro da Família',
+        role: data.role || 'Membro da Resenha',
         totalBets: data.total_bets || 0,
         totalPoints: data.total_points || 0
       });
@@ -324,7 +324,7 @@ export default function App() {
                   Bem-vindo à resenha!
                 </h2>
                 <p className="font-sans text-sm md:text-base text-white/95 mt-2">
-                  O bolão oficial da família para torcer, palpitar e zoar os tios com muito carinho.
+                  O bolão oficial dos amigos para torcer, palpitar e zoar a galera com muita resenha.
                 </p>
                 <div className="mt-6 flex gap-3 flex-wrap">
                   <button 
@@ -463,7 +463,7 @@ export default function App() {
         onNavigate={(screen) => setCurrentScreen(screen)}
         onBack={handleBack}
         userAvatar={currentUser.avatar}
-        isAdmin={currentUser.role === 'Admin da Família'}
+        isAdmin={currentUser.role === 'Admin da Resenha' || currentUser.role === 'Admin da Família'}
       />
 
       {/* Main Content Viewport */}
@@ -475,7 +475,7 @@ export default function App() {
       <BottomNavBar 
         currentScreen={currentScreen}
         onNavigate={(screen) => setCurrentScreen(screen)}
-        isAdmin={currentUser.role === 'Admin da Família'}
+        isAdmin={currentUser.role === 'Admin da Resenha' || currentUser.role === 'Admin da Família'}
       />
     </div>
   );
