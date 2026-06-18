@@ -1,5 +1,5 @@
 {
-  "name": "Selman'sBet",
+  "name": "Bolão da Resenha",
   "description": "O bolão oficial da família para dar palpites, acompanhar o ranking de pontuação e vibrar juntos a cada gol. A diversão em família começa aqui.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
