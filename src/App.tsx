@@ -18,11 +18,20 @@ import { Trophy, Compass, Star, Flame, Award, ShieldAlert } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
 export const parseDateStr = (dateStr: string) => {
+  if (!dateStr) return 0;
   try {
-    const [datePart, timePart] = dateStr.split(' às ');
-    const [day, month, year] = datePart.split('/');
-    const [hour, minute] = timePart.split(':');
-    return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)).getTime();
+    const dMatch = dateStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+    const tMatch = dateStr.match(/(\d{1,2})[:h](\d{2})/);
+
+    if (dMatch && tMatch) {
+      const day = parseInt(dMatch[1], 10);
+      const month = parseInt(dMatch[2], 10) - 1;
+      const year = parseInt(dMatch[3], 10);
+      const hour = parseInt(tMatch[1], 10);
+      const minute = parseInt(tMatch[2], 10);
+      return new Date(year, month, day, hour, minute).getTime();
+    }
+    return 0;
   } catch (e) {
     return 0;
   }
