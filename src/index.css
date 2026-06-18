@@ -36,31 +36,32 @@
 }
 
  /* Magic curved bottom navigation */
-.magic-indicator {
+.magic-hole {
   position: absolute;
-  top: -24px;
-  width: 56px;
-  height: 56px;
+  top: -30px;
+  width: 72px;
+  height: 72px;
+  background-color: #f7f9fb;
   border-radius: 50%;
-  border: 6px solid #f7f9fb;
-  z-index: 20;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
 }
-.magic-indicator::before,
-.magic-indicator::after {
+.magic-hole::before,
+.magic-hole::after {
   content: '';
   position: absolute;
-  top: 50%;
-  width: 20px;
-  height: 20px;
+  top: 36px;
+  width: 24px;
+  height: 24px;
   background-color: transparent;
 }
-.magic-indicator::before {
+.magic-hole::before {
   left: -22px;
-  border-top-right-radius: 20px;
-  box-shadow: 4px -4px 0 0 #f7f9fb;
+  border-top-right-radius: 24px;
+  box-shadow: 10px -10px 0 0 #f7f9fb;
 }
-.magic-indicator::after {
+.magic-hole::after {
   right: -22px;
-  border-top-left-radius: 20px;
-  box-shadow: -4px -4px 0 0 #f7f9fb;
+  border-top-left-radius: 24px;
+  box-shadow: -10px -10px 0 0 #f7f9fb;
 }
