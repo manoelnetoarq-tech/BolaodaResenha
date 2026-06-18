@@ -30,7 +30,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
       case 'profile':
         return 'Meu Perfil';
       default:
-        return "Selman's Bet";
+        return "Bolão da Resenha";
     }
   };
 
@@ -59,7 +59,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
               referrerPolicy="no-referrer"
             />
             <span className="font-poppins font-bold text-[#191c1e] text-lg md:text-xl tracking-tight">
-              Selman'sBet
+              Bolão da Resenha
             </span>
           </div>
 
@@ -70,12 +70,6 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
           )}
         </div>
 
-        {/* Mobile Centered Title */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:hidden pointer-events-none w-max z-0">
-          <h1 className="font-poppins font-bold text-[17px] text-[#191c1e] tracking-tight">
-            Bolão da Resenha
-          </h1>
-        </div>
 
         {/* Desktop inline navigator */}
         <nav className="hidden md:flex items-center gap-8">
