@@ -12,7 +12,6 @@ interface AdminPanelProps {
   onUpdateMatchStatus: (matchId: string, status: MatchStatus) => void;
   onUpdateLiveScore: (matchId: string, scoreHome: number, scoreAway: number) => void;
   onLaunchResults: (matchId: string, scoreHome: number, scoreAway: number) => void;
-  onUpdateLiveScore: (matchId: string, scoreHome: number, scoreAway: number) => void;
   onDeletePrediction: (predictionId: string) => void;
 }
 
@@ -24,7 +23,6 @@ export default function AdminPanel({
   onUpdateMatchStatus,
   onUpdateLiveScore,
   onLaunchResults,
-  onUpdateLiveScore,
   onDeletePrediction
 }: AdminPanelProps) {
   const [showAddMatchForm, setShowAddMatchForm] = useState(false);
