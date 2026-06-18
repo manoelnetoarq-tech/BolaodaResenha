@@ -34,34 +34,3 @@
 .animate-spin-slow {
   animation: spin 8s linear infinite;
 }
-
- /* Magic curved bottom navigation */
-.magic-hole {
-  position: absolute;
-  top: -30px;
-  width: 72px;
-  height: 72px;
-  background-color: #f7f9fb;
-  border-radius: 50%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 10;
-}
-.magic-hole::before,
-.magic-hole::after {
-  content: '';
-  position: absolute;
-  top: 36px;
-  width: 24px;
-  height: 24px;
-  background-color: transparent;
-}
-.magic-hole::before {
-  left: -22px;
-  border-top-right-radius: 24px;
-  box-shadow: 10px -10px 0 0 #f7f9fb;
-}
-.magic-hole::after {
-  right: -22px;
-  border-top-left-radius: 24px;
-  box-shadow: -10px -10px 0 0 #f7f9fb;
-}

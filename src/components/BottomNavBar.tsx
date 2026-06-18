@@ -12,52 +12,60 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
   const isRankingActive = currentScreen === 'ranking';
   const isAdminActive = currentScreen === 'admin';
 
-  const tabsCount = isAdmin ? 3 : 2;
-  const activeIndex = isInicioActive ? 0 : isRankingActive ? 1 : isAdminActive ? 2 : 0;
-  const indicatorLeft = `calc((100% / ${tabsCount}) * ${activeIndex} + (100% / ${tabsCount * 2}))`;
+  const navItems = [
+    { id: 'home', icon: Home, label: 'Início', isActive: isInicioActive },
+    { id: 'ranking', icon: Trophy, label: 'Ranking', isActive: isRankingActive },
+  ];
+  
+  if (isAdmin) {
+    navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });
+  }
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 flex h-[72px] pb-[env(safe-area-inset-bottom,0px)] bg-white rounded-t-3xl shadow-[0_-10px_25px_rgba(0,0,0,0.06)]">
-      {/* Sliding Cutout Hole (Barriga) */}
-      <div 
-        className="magic-hole"
-        style={{ 
-          left: indicatorLeft, 
-          transform: 'translateX(-50%)' 
-        }}
-      ></div>
+    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-white shadow-[0_-4px_25px_rgba(0,0,0,0.04)] rounded-t-[24px] flex justify-around px-2">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = item.isActive;
+        
+        return (
+          <button
+            key={item.id}
+            onClick={() => onNavigate(item.id as Screen)}
+            className="relative flex-1 flex flex-col items-center justify-start pt-2 pb-[calc(14px+env(safe-area-inset-bottom,0px))]"
+          >
+            {/* Círculo flutuante com borda branca e brilho amarelo */}
+            <div 
+              className={`absolute flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-full ${
+                isActive 
+                  ? 'top-0 -translate-y-[40%] w-[60px] h-[60px] bg-[#fed01b] shadow-[0_8px_20px_rgba(254,208,27,0.6)] border-[5px] border-white z-20' 
+                  : 'top-2 translate-y-0 w-[48px] h-[48px] bg-transparent border-[5px] border-transparent z-10'
+              }`}
+            >
+              <Icon 
+                className={`transition-all duration-500 ${
+                  isActive 
+                    ? 'w-6 h-6 stroke-[2.5] text-[#6f5900]' 
+                    : 'w-[22px] h-[22px] stroke-[2] text-[#9ca3af]'
+                }`} 
+              />
+            </div>
+            
+            {/* Espaçador invisível */}
+            <div className="w-full h-[38px]" />
 
-      {/* Tab: Início */}
-      <button
-        onClick={() => onNavigate('home')}
-        className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
-      >
-        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isInicioActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_20px_rgba(0,156,59,0.6)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
-          <Home className={`w-6 h-6 transition-transform duration-300 ${isInicioActive ? 'scale-110' : ''}`} />
-        </div>
-      </button>
-
-      {/* Tab: Ranking */}
-      <button
-        onClick={() => onNavigate('ranking')}
-        className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
-      >
-        <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isRankingActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_20px_rgba(0,156,59,0.6)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
-          <Trophy className={`w-6 h-6 transition-transform duration-300 ${isRankingActive ? 'scale-110' : ''}`} />
-        </div>
-      </button>
-
-      {/* Tab: Admin */}
-      {isAdmin && (
-        <button
-          onClick={() => onNavigate('admin')}
-          className="relative flex-1 flex flex-col items-center justify-center h-full z-20"
-        >
-          <div className={`transition-all duration-300 flex items-center justify-center rounded-full ${isAdminActive ? 'absolute -top-[16px] w-14 h-14 bg-gradient-to-tr from-[#001c57] to-[#002776] text-[#fed01b] shadow-[0_8px_20px_rgba(0,156,59,0.6)]' : 'w-12 h-12 text-[#bdcaba]'}`}>
-            <Settings className={`w-6 h-6 transition-transform duration-300 ${isAdminActive ? 'scale-110' : ''}`} />
-          </div>
-        </button>
-      )}
+            {/* Texto abaixo do ícone */}
+            <span 
+              className={`text-[11px] font-sans transition-all duration-500 ${
+                isActive 
+                  ? 'opacity-100 text-[#191c1e] font-bold' 
+                  : 'opacity-100 text-[#9ca3af] font-medium'
+              }`}
+            >
+              {item.label}
+            </span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
