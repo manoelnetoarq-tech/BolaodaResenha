@@ -8,7 +8,7 @@
   "theme_color": "#006b2c",
   "icons": [
     {
-      "src": "https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/BolaodaResenha/Icon.png",
+      "src": "/Icon.png",
       "sizes": "192x192 512x512",
       "type": "image/png"
     }
