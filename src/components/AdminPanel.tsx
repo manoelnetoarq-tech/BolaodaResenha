@@ -12,6 +12,7 @@ interface AdminPanelProps {
   onUpdateMatchStatus: (matchId: string, status: MatchStatus) => void;
   onUpdateLiveScore: (matchId: string, scoreHome: number, scoreAway: number) => void;
   onLaunchResults: (matchId: string, scoreHome: number, scoreAway: number) => void;
+  onUpdateLiveScore: (matchId: string, scoreHome: number, scoreAway: number) => void;
   onDeletePrediction: (predictionId: string) => void;
 }
 
@@ -23,10 +24,12 @@ export default function AdminPanel({
   onUpdateMatchStatus,
   onUpdateLiveScore,
   onLaunchResults,
+  onUpdateLiveScore,
   onDeletePrediction
 }: AdminPanelProps) {
   const [showAddMatchForm, setShowAddMatchForm] = useState(false);
   const [showLaunchResultsId, setShowLaunchResultsId] = useState<string | null>(null);
+  const [showLiveScoreId, setShowLiveScoreId] = useState<string | null>(null);
   const [editingMatchId, setEditingMatchId] = useState<string | null>(null);
 
   // New Match Inputs State
@@ -491,6 +494,12 @@ export default function AdminPanel({
                     Aberto
                   </span>
                 )}
+                {match.status === 'Ao Vivo' && (
+                  <span className="bg-[#ba1a1a]/10 text-[#ba1a1a] px-2.5 py-0.5 rounded-full font-sans text-[10px] font-bold flex items-center gap-1.5 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ba1a1a]"></span>
+                    Ao Vivo ({match.scoreHome || 0}x{match.scoreAway || 0})
+                  </span>
+                )}
                 {match.status === 'Fechado' && (
                   <span className="bg-[#f2f4f6] text-[#3e4a3d] px-2.5 py-0.5 rounded-full font-sans text-[10px] font-bold">
                     Encerrado
@@ -612,6 +621,51 @@ export default function AdminPanel({
                     </button>
                   </div>
                 </div>
+              ) : showLiveScoreId === match.id ? (
+                <div className="bg-[#ba1a1a]/5 p-3 rounded-xl border border-[#ba1a1a]/20 flex flex-col gap-3 animate-fade-in">
+                  <span className="text-xs font-semibold text-[#ba1a1a] font-sans">Atualizar Gol (Ao Vivo)</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-xs font-sans font-medium text-[#3e4a3d]">{match.teamHome}:</span>
+                      <input 
+                        type="number" 
+                        min="0"
+                        value={launchScoreHome}
+                        onChange={(e) => setLaunchScoreHome(Number(e.target.value))}
+                        className="w-14 h-9 bg-white border border-[#ba1a1a]/30 rounded-md text-center text-sm font-poppins text-[#191c1e]"
+                        required
+                      />
+                    </div>
+                    <span className="text-[#6e7b6c] text-xs font-normal">x</span>
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-xs font-sans font-medium text-[#3e4a3d]">{match.teamAway}:</span>
+                      <input 
+                        type="number" 
+                        min="0"
+                        value={launchScoreAway}
+                        onChange={(e) => setLaunchScoreAway(Number(e.target.value))}
+                        className="w-14 h-9 bg-white border border-[#ba1a1a]/30 rounded-md text-center text-sm font-poppins text-[#191c1e]"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 justify-end">
+                    <button 
+                      type="button"
+                      onClick={() => setShowLiveScoreId(null)}
+                      className="px-3.5 py-1.5 bg-white text-[#3e4a3d] font-sans text-[11px] font-semibold rounded-md border border-[#eceef0] cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => handleLiveScoreSubmit(match.id)}
+                      className="px-4 py-1.5 bg-[#ba1a1a] text-white font-sans text-[11px] font-bold rounded-md shadow-sm cursor-pointer"
+                    >
+                      Gritar Gol!
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <div className="flex flex-wrap gap-2 justify-end mt-2">
                   {match.status !== 'Finalizado' && (
@@ -648,6 +702,7 @@ export default function AdminPanel({
                       onClick={() => {
                         setShowLiveScoreId(null);
                         setShowLaunchResultsId(match.id);
+                        setShowLiveScoreId(null);
                         setLaunchScoreHome(match.scoreHome || 0);
                         setLaunchScoreAway(match.scoreAway || 0);
                       }}

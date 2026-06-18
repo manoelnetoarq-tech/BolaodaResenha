@@ -118,6 +118,11 @@ export default function MatchDetailBetting({
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00873a] animate-pulse"></span> Aberto
               </span>
             )}
+            {match.status === 'Ao Vivo' && (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#ba1a1a]/10 text-[#ba1a1a] font-sans text-[10px] font-bold flex gap-1.5 border border-[#ba1a1a]/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ba1a1a] animate-pulse"></span> Ao Vivo
+              </span>
+            )}
             {match.status === 'Fechado' && (
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#f2f4f6] text-[#3e4a3d] font-sans text-[10px] font-medium flex gap-1.5 border border-[#e0e3e5]">
                 <Lock className="w-3 h-3 text-[#3e4a3d]" /> Fechado
@@ -357,6 +362,8 @@ export default function MatchDetailBetting({
           <p className="font-poppins font-semibold text-sm text-[#ba1a1a]">
             {match.status === 'Aberto' && !isBettingOpen() 
               ? 'Tempo limite atingido. Palpites encerram 15 minutos antes do jogo! ⏰'
+              : match.status === 'Ao Vivo'
+              ? 'A bola está rolando! Palpites encerrados e placar ao vivo. 🔥'
               : 'Palpites para este jogo já estão encerrados para novas participações. 🔒'}
           </p>
         </div>

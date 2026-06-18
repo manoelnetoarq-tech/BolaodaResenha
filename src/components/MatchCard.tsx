@@ -38,6 +38,12 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
             Aberto
           </span>
         )}
+        {match.status === 'Ao Vivo' && (
+          <span className="bg-[#ba1a1a]/10 text-[#ba1a1a] font-sans text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-[#ba1a1a]/20">
+            <span className="w-2 h-2 rounded-full bg-[#ba1a1a] animate-pulse"></span>
+            Ao Vivo
+          </span>
+        )}
         {match.status === 'Fechado' && (
           <span className="bg-[#f2f4f6] text-[#3e4a3d] font-sans text-xs font-medium px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-[#e0e3e5]">
             <Lock className="w-3.5 h-3.5 text-[#3e4a3d]" />
@@ -150,7 +156,7 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
                 : 'bg-[#eceef0] text-[#3e4a3d] hover:bg-[#e0e3e5]'
             }`}
           >
-            {match.status === 'Aberto' ? 'Dar palpite' : 'Ver detalhes'}
+            {match.status === 'Aberto' ? 'Dar palpite' : match.status === 'Ao Vivo' ? 'Ver partida' : 'Ver detalhes'}
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>

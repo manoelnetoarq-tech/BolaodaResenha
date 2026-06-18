@@ -1,4 +1,4 @@
-export type MatchStatus = 'Aberto' | 'Finalizado' | 'Fechado';
+export type MatchStatus = 'Aberto' | 'Ao Vivo' | 'Finalizado' | 'Fechado';
 
 export interface Match {
   id: string;

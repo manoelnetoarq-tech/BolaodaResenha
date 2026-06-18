@@ -58,6 +58,42 @@ export default function App() {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    const channel = supabase
+      .channel('public:matches:live_score')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'matches' },
+        (payload) => {
+          const newMatch = payload.new;
+          const oldMatch = payload.old;
+          
+          if (newMatch.status === 'Ao Vivo') {
+            // Trigger push notification if score changed
+            if (newMatch.score_home !== oldMatch.score_home || newMatch.score_away !== oldMatch.score_away) {
+              if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('⚽ GOOOOOL na Resenha!', {
+                  body: `${newMatch.team_home} ${newMatch.score_home || 0} x ${newMatch.score_away || 0} ${newMatch.team_away}`,
+                  icon: '/boladacopa.png',
+                  badge: '/boladacopa.png',
+                  tag: `goal-${newMatch.id}`,
+                  renotify: true
+                });
+              }
+            }
+          }
+          
+          // Reload matches to reflect UI changes
+          loadData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const loadUserProfile = async (userId: string) => {
     const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
     if (!error && data) {
@@ -271,8 +307,22 @@ export default function App() {
   };
 
   const handleUpdateMatchStatus = async (matchId: string, status: MatchStatus) => {
-    await supabase.from('matches').update({ status }).eq('id', matchId);
-    loadData();
+    const { error } = await supabase.from('matches').update({ status }).eq('id', matchId);
+    if (!error) {
+      loadData();
+    }
+  };
+
+  const handleUpdateLiveScore = async (matchId: string, scoreHome: number, scoreAway: number) => {
+    const { error } = await supabase.from('matches').update({
+      score_home: scoreHome,
+      score_away: scoreAway,
+      status: 'Ao Vivo'
+    }).eq('id', matchId);
+
+    if (!error) {
+      loadData();
+    }
   };
 
   const handleUpdateLiveScore = async (matchId: string, scoreHome: number, scoreAway: number) => {
@@ -423,6 +473,7 @@ export default function App() {
             onUpdateMatchStatus={handleUpdateMatchStatus}
             onUpdateLiveScore={handleUpdateLiveScore}
             onLaunchResults={handleLaunchResults}
+            onUpdateLiveScore={handleUpdateLiveScore}
             onDeletePrediction={handleDeletePrediction}
           />
         );
