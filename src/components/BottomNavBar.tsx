@@ -22,7 +22,7 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
   }
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-white shadow-[0_-4px_25px_rgba(0,0,0,0.04)] rounded-t-[24px] flex justify-around px-2">
+    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_-10px_25px_rgba(15,23,42,0.06)] rounded-t-3xl flex justify-around px-2">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = item.isActive;
@@ -33,32 +33,32 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
             onClick={() => onNavigate(item.id as Screen)}
             className="relative flex-1 flex flex-col items-center justify-start pt-2 pb-[calc(14px+env(safe-area-inset-bottom,0px))]"
           >
-            {/* Círculo flutuante com borda branca e brilho amarelo */}
+            {/* O círculo flutuante com o ícone - usa a borda com a mesma cor do fundo para criar a ilusão de recorte (cutout) */}
             <div 
               className={`absolute flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-full ${
                 isActive 
-                  ? 'top-0 -translate-y-[40%] w-[60px] h-[60px] bg-[#fed01b] shadow-[0_8px_20px_rgba(254,208,27,0.6)] border-[5px] border-white z-20' 
-                  : 'top-2 translate-y-0 w-[48px] h-[48px] bg-transparent border-[5px] border-transparent z-10'
+                  ? 'top-0 -translate-y-[40%] w-[64px] h-[64px] bg-[#fed01b] shadow-[0_8px_16px_rgba(254,208,27,0.3)] border-[6px] border-[#f7f9fb] z-20' 
+                  : 'top-2 translate-y-0 w-[48px] h-[48px] bg-transparent border-[6px] border-transparent z-10'
               }`}
             >
               <Icon 
                 className={`transition-all duration-500 ${
                   isActive 
                     ? 'w-6 h-6 stroke-[2.5] text-[#6f5900]' 
-                    : 'w-[22px] h-[22px] stroke-[2] text-[#9ca3af]'
+                    : 'w-[22px] h-[22px] stroke-[2] text-[#8e9894]'
                 }`} 
               />
             </div>
             
-            {/* Espaçador invisível */}
-            <div className="w-full h-[38px]" />
+            {/* Espaçador invisível para empurrar o texto para baixo, já que o ícone é absoluto */}
+            <div className="w-full h-10" />
 
-            {/* Texto abaixo do ícone */}
+            {/* O texto abaixo do ícone */}
             <span 
-              className={`text-[11px] font-sans transition-all duration-500 ${
+              className={`text-[11px] font-sans font-semibold transition-all duration-500 ${
                 isActive 
-                  ? 'opacity-100 text-[#191c1e] font-bold' 
-                  : 'opacity-100 text-[#9ca3af] font-medium'
+                  ? 'opacity-100 text-[#191c1e]' 
+                  : 'opacity-100 text-[#8e9894]'
               }`}
             >
               {item.label}
