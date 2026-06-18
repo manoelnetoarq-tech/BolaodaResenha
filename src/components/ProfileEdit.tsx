@@ -87,10 +87,24 @@ export default function ProfileEdit({
         return;
       }
 
-      const registration = await navigator.serviceWorker.ready;
+      // Em vez de usar .ready (que pode travar), garantimos o registro explicitamente
+      let registration = await navigator.serviceWorker.getRegistration();
       if (!registration) {
-        alert('Erro: Service Worker não inicializado.');
+        registration = await navigator.serviceWorker.register('/sw.js');
+      }
+
+      if (!registration) {
+        alert('Erro: Service Worker não pôde ser registrado. O seu navegador pode estar bloqueando.');
         return;
+      }
+
+      // Aguarda o SW ficar ativo se estiver instalando
+      if (registration.installing) {
+        await new Promise(resolve => {
+          registration!.installing!.addEventListener('statechange', (e: any) => {
+            if (e.target.state === 'activated') resolve(true);
+          });
+        });
       }
 
       if (isPushEnabled) {
