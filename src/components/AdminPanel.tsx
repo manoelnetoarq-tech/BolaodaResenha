@@ -58,7 +58,6 @@ export default function AdminPanel({
   const [isSendingPush, setIsSendingPush] = useState(false);
 
   // Live Score State
-  const [showLiveScoreId, setShowLiveScoreId] = useState<string | null>(null);
   const [liveScoreHome, setLiveScoreHome] = useState<number>(0);
   const [liveScoreAway, setLiveScoreAway] = useState<number>(0);
   const [liveNotifyPush, setLiveNotifyPush] = useState<boolean>(true);
@@ -294,7 +293,6 @@ export default function AdminPanel({
             Disparar Notificação Local de Teste
           </button>
         </div>
-      </section>
       </section>
 
       {/* Primary Action Panel */}
