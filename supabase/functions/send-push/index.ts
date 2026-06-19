@@ -79,7 +79,7 @@ serve(async (req) => {
     const notificationPayload = JSON.stringify({
       title,
       body,
-      icon: icon || '/Icon.png',
+      icon: icon || '/icon-notification.png',
       url: url || '/'
     });
 

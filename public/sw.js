@@ -18,8 +18,8 @@ self.addEventListener('push', function(event) {
     const title = data.title || 'Bolão da Resenha';
     const options = {
       body: data.body || 'Você tem uma nova notificação.',
-      icon: '/Logo.png',
-      badge: '/Logo.png',
+      icon: '/icon-notification.png',
+      badge: '/icon-notification.png',
       data: data.url || '/'
     };
 

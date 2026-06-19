@@ -191,7 +191,7 @@ export default function AdminPanel({
         const title = `⚽ Atualização de Placar!`;
         const body = `${match.teamHome} ${liveScoreHome} x ${liveScoreAway} ${match.teamAway}`;
         
-        const { error } = await supabase.from('notifications').insert({ title, body, icon: '/Logo.png' });
+        const { error } = await supabase.from('notifications').insert({ title, body, icon: '/icon-notification.png' });
         if (error) throw error;
         
         alert('Placar atualizado e notificação registrada com sucesso no banco!');
@@ -218,7 +218,7 @@ export default function AdminPanel({
       const { error } = await supabase.from('notifications').insert({
         title: pushTitle,
         body: pushBody,
-        icon: '/Logo.png'
+        icon: '/icon-notification.png'
       });
 
       if (error) throw error;

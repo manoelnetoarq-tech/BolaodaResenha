@@ -114,7 +114,7 @@ export async function sendLocalTestNotification() {
     if (registration) {
       registration.showNotification('Teste da Resenha', {
         body: 'As notificações estão funcionando perfeitamente!',
-        icon: '/Logo.png'
+        icon: '/icon-notification.png'
       });
     }
   } else {
