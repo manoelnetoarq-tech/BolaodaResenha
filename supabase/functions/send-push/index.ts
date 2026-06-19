@@ -85,8 +85,8 @@ serve(async (req) => {
 
     const sendPromises = subscriptions.map(async (sub) => {
       const pushSubscription = {
-        endpoint: sub.endpoint,
-        keys: {
+        endpoint: sub.subscription?.endpoint || sub.endpoint,
+        keys: sub.subscription?.keys || {
           p256dh: sub.p256dh,
           auth: sub.auth
         }
@@ -94,14 +94,14 @@ serve(async (req) => {
 
       try {
         await webPush.sendNotification(pushSubscription, notificationPayload);
-        return { success: true, endpoint: sub.endpoint };
+        return { success: true, endpoint: pushSubscription.endpoint };
       } catch (err: any) {
-        console.error('Erro ao enviar push para', sub.endpoint, err);
+        console.error('Erro ao enviar push para', pushSubscription.endpoint, err);
         // Remove assinaturas inválidas (410 Gone ou 404 Not Found)
         if (err.statusCode === 410 || err.statusCode === 404) {
-          await supabaseClient.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
+          await supabaseClient.from('push_subscriptions').delete().eq('user_id', sub.user_id);
         }
-        return { success: false, endpoint: sub.endpoint, error: err.message };
+        return { success: false, endpoint: pushSubscription.endpoint, error: err.message };
       }
     });
 
