@@ -40,7 +40,8 @@ begin
       'type', 'INSERT',
       'table', TG_TABLE_NAME,
       'record', row_to_json(NEW)
-    )::jsonb
+    )::jsonb,
+    timeout_milliseconds := 5000
   );
   return NEW;
 end;
