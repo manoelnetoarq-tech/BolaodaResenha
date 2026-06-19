@@ -194,7 +194,12 @@ export default function AdminPanel({
         const { error } = await supabase.from('notifications').insert({ title, body, icon: '/icon-notification.png' });
         if (error) throw error;
         
-        alert('Placar atualizado e notificação registrada com sucesso no banco!');
+        // Chamada direta para garantir o envio, pois o pg_net (webhook) pode estar bloqueado pelo limite de uso do Supabase
+        await supabase.functions.invoke('send-push', {
+          body: { title, body, icon: '/icon-notification.png' }
+        });
+        
+        alert('Placar atualizado e notificação registrada e enviada com sucesso!');
       } catch (err) {
         console.error('Erro push ao vivo:', err);
         alert('Placar atualizado, mas houve um erro ao registrar a notificação.');
@@ -222,7 +227,13 @@ export default function AdminPanel({
       });
 
       if (error) throw error;
-      alert('Notificação gravada no banco! O Supabase vai disparar automaticamente.');
+      
+      // Chamada direta para garantir o envio, contornando bloqueios de Webhook do Supabase
+      await supabase.functions.invoke('send-push', {
+        body: { title: pushTitle, body: pushBody, icon: '/icon-notification.png' }
+      });
+
+      alert('Notificação gravada no banco e enviada para os celulares com sucesso!');
       setPushTitle('');
       setPushBody('');
     } catch (err: any) {
