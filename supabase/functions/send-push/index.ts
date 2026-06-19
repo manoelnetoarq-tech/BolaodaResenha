@@ -33,7 +33,25 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { title, body, icon, url, userId } = await req.json();
+    const payload = await req.json();
+
+    let title, body, icon, url, userId;
+
+    if (payload.type === 'INSERT' && payload.table === 'notifications' && payload.record) {
+      // Recebido via Database Webhook
+      title = payload.record.title;
+      body = payload.record.body;
+      icon = payload.record.icon;
+      url = payload.record.url;
+      userId = payload.record.user_id;
+    } else {
+      // Chamada direta manual (fallback/testes)
+      title = payload.title;
+      body = payload.body;
+      icon = payload.icon;
+      url = payload.url;
+      userId = payload.userId;
+    }
 
     if (!title || !body) {
       throw new Error('Title e body são obrigatórios');

@@ -191,13 +191,13 @@ export default function AdminPanel({
         const title = `⚽ Atualização de Placar!`;
         const body = `${match.teamHome} ${liveScoreHome} x ${liveScoreAway} ${match.teamAway}`;
         
-        await supabase.functions.invoke('send-push', {
-          body: { title, body }
-        });
-        alert('Placar atualizado e notificação enviada!');
+        const { error } = await supabase.from('notifications').insert({ title, body, icon: '/Logo.png' });
+        if (error) throw error;
+        
+        alert('Placar atualizado e notificação registrada com sucesso no banco!');
       } catch (err) {
         console.error('Erro push ao vivo:', err);
-        alert('Placar atualizado, mas houve um erro ao enviar a notificação.');
+        alert('Placar atualizado, mas houve um erro ao registrar a notificação.');
       }
     } else {
       alert('Placar atualizado ao vivo (sem notificação).');
@@ -215,20 +215,19 @@ export default function AdminPanel({
 
     setIsSendingPush(true);
     try {
-      const { data, error } = await supabase.functions.invoke('send-push', {
-        body: {
-          title: pushTitle,
-          body: pushBody,
-        }
+      const { error } = await supabase.from('notifications').insert({
+        title: pushTitle,
+        body: pushBody,
+        icon: '/Logo.png'
       });
 
       if (error) throw error;
-      alert('Notificações enviadas com sucesso!');
+      alert('Notificação gravada no banco! O Supabase vai disparar automaticamente.');
       setPushTitle('');
       setPushBody('');
     } catch (err: any) {
       console.error(err);
-      alert('Erro ao enviar notificação. Verifique se a Edge Function está implantada e os secrets configurados.');
+      alert('Erro ao gravar notificação no banco de dados. Verifique a tabela "notifications".');
     } finally {
       setIsSendingPush(false);
     }
