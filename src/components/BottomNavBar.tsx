@@ -16,12 +16,12 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
 
   let navItems = [];
 
-  const isProfileMode = ['tournaments', 'profile', 'edit-profile', 'change-password', 'notifications'].includes(currentScreen);
+  const isProfileMode = ['tournaments', 'profile', 'edit-profile', 'change-password', 'notifications', 'hub-chat'].includes(currentScreen);
 
   if (isProfileMode) {
     navItems = [
       { id: 'profile', icon: User, label: 'Perfil', isActive: currentScreen === 'profile' },
-      { id: 'chat', icon: MessageCircle, label: 'Resenha', isActive: currentScreen === 'chat' },
+      { id: 'hub-chat', icon: MessageCircle, label: 'Resenha', isActive: currentScreen === 'hub-chat' },
     ];
     if (isAdmin) {
       navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });

@@ -79,6 +79,7 @@ export type Screen =
   | 'notifications'
   | 'home'
   | 'chat'
+  | 'hub-chat'
   | 'match-details'
   | 'ranking'
   | 'groups'

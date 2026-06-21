@@ -681,6 +681,7 @@ export default function App() {
         );
 
       case 'chat':
+      case 'hub-chat':
         return <ChatScreen currentUser={currentUser} />;
 
       case 'ranking':

@@ -12,8 +12,8 @@ interface HeaderProps {
 }
 
 export default function Header({ currentScreen, onNavigate, onBack, userAvatar, isAdmin, activeCompetition = 'Copa do Mundo', onSelectCompetition }: HeaderProps) {
-  // Check if current screen is transactional / has back button
   const hasBack = ['match-details', 'edit-profile', 'change-password'].includes(currentScreen);
+  const isHubContext = currentScreen === 'tournaments' || currentScreen === 'hub-chat';
 
   const getTitle = () => {
     switch (currentScreen) {
@@ -44,7 +44,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
     <header className="fixed top-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col transition-all">
       <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between h-20 md:h-24 relative">
         <div className="flex items-center gap-3 relative z-10 w-1/3">
-          {currentScreen !== 'tournaments' && (
+          {!isHubContext && (
             <button
               onClick={() => {
                 if (hasBack && onBack) {
@@ -60,7 +60,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
             </button>
           )}
 
-          {!hasBack && currentScreen !== 'tournaments' && (
+          {!hasBack && !isHubContext && (
             <span className="hidden lg:inline font-poppins font-medium text-lg text-[#191c1e] border-l-2 border-[#bdcaba] pl-4">
               {getTitle()}
             </span>
@@ -77,11 +77,11 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
               src="/Logo.png" 
               alt="Selman's Bet Logo" 
               className={`w-auto object-contain transition-all ${
-                currentScreen === 'tournaments' ? 'h-12 md:h-16' : 'h-8 md:h-12'
+                isHubContext ? 'h-12 md:h-16' : 'h-8 md:h-12'
               }`}
               referrerPolicy="no-referrer"
             />
-            {currentScreen !== 'tournaments' && (
+            {!isHubContext && (
               <span className="font-poppins font-bold text-[#191c1e] text-base md:text-xl tracking-tight hidden sm:inline-block whitespace-nowrap">
                 Bolão da Resenha
               </span>
@@ -91,7 +91,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
 
         {/* Right side container to balance flex and prevent overlapping */}
         <div className="flex items-center justify-end gap-3 relative z-10 w-1/3">
-          {currentScreen !== 'tournaments' && (
+          {!isHubContext && (
             <>
               <nav className="hidden md:flex items-center gap-8">
                 <button
