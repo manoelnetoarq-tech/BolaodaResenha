@@ -453,63 +453,68 @@ export default function App() {
                   setActiveCompetition('Copa do Mundo');
                   setCurrentScreen('home');
                 }}
-                className="relative overflow-hidden bg-gradient-to-br from-[#006b2c] to-[#00873a] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left transition-all active:scale-95 shadow-[0_8px_20px_-8px_rgba(0,107,44,0.4)] hover:shadow-[0_12px_25px_-8px_rgba(0,107,44,0.5)] cursor-pointer group flex flex-col justify-between aspect-square"
+                className="relative overflow-hidden bg-[#006b2c] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left transition-all active:scale-95 shadow-[0_8px_20px_-8px_rgba(0,107,44,0.4)] hover:shadow-[0_12px_25px_-8px_rgba(0,107,44,0.5)] cursor-pointer group flex flex-col justify-between aspect-square"
               >
-                <div 
-                  className="absolute inset-0 opacity-20 pointer-events-none transition-opacity group-hover:opacity-30" 
-                  style={{
-                    backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-                    backgroundSize: '16px 16px'
-                  }}
-                ></div>
-                <div className="relative z-10 flex justify-between items-start w-full">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm">
-                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/copa.webp" alt="Copa do Mundo" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
-                  </div>
+                <img 
+                  src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/copa.webp" 
+                  alt="Copa do Mundo" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-0" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex justify-end w-full">
                   <div className="bg-white/20 backdrop-blur-md border border-white/20 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#fed01b] animate-pulse"></span>
                     Ativo
                   </div>
                 </div>
-                <div className="relative z-10">
-                  <h3 className="font-poppins font-black text-white text-lg md:text-2xl leading-tight md:leading-tight">Copa do<br/>Mundo</h3>
-                  <p className="font-sans text-white/80 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">América do Norte 2026</p>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="font-poppins font-black text-white text-lg md:text-2xl leading-tight md:leading-tight drop-shadow-md">Copa do<br/>Mundo</h3>
+                  <p className="font-sans text-white/90 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1 drop-shadow-md">América do Norte 2026</p>
                 </div>
               </button>
 
               {/* Brasileirão - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
+                className="relative overflow-hidden bg-[#191c1e] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
-                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/brasileiro.png" alt="Brasileirão" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
-                  </div>
-                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                <img 
+                  src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/brasileiro.png" 
+                  alt="Brasileirão" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale mix-blend-luminosity z-0" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex justify-end w-full">
+                  <div className="bg-black/40 backdrop-blur-md border border-white/10 text-white/70 text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-sm">
                     Em Breve
                   </div>
                 </div>
-                <div className="relative z-10 grayscale-[0.3]">
-                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Brasileirão</h3>
-                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">Série A</p>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="font-poppins font-black text-white/60 text-lg md:text-2xl leading-tight md:leading-tight drop-shadow-md">Brasileirão</h3>
+                  <p className="font-sans text-white/40 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1 drop-shadow-md">Série A</p>
                 </div>
               </button>
 
               {/* Libertadores - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
+                className="relative overflow-hidden bg-[#191c1e] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
-                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/Libertadores.png" alt="Libertadores" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
-                  </div>
-                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                <img 
+                  src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/Libertadores.png" 
+                  alt="Libertadores" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale mix-blend-luminosity z-0" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex justify-end w-full">
+                  <div className="bg-black/40 backdrop-blur-md border border-white/10 text-white/70 text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-sm">
                     Em Breve
                   </div>
                 </div>
-                <div className="relative z-10 grayscale-[0.3]">
-                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Libertadores</h3>
-                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">América do Sul</p>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="font-poppins font-black text-white/60 text-lg md:text-2xl leading-tight md:leading-tight drop-shadow-md">Libertadores</h3>
+                  <p className="font-sans text-white/40 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1 drop-shadow-md">América do Sul</p>
                 </div>
               </button>
 
