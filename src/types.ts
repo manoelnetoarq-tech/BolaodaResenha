@@ -15,6 +15,20 @@ export interface Match {
   prizeImage?: string;
 }
 
+export interface GroupStanding {
+  id: string;
+  group_name: string;
+  team_name: string;
+  j: number;
+  v: number;
+  e: number;
+  d: number;
+  gp: number;
+  gc: number;
+  sg: number;
+  pts: number;
+}
+
 export interface Prediction {
   id: string;
   matchId: string;

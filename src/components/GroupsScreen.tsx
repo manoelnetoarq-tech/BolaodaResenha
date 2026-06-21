@@ -1,29 +1,97 @@
 import { useMemo } from 'react';
-import { Match } from '../types';
-import { INITIAL_GROUPS } from '../data/groupsData';
+import { Match, GroupStanding } from '../types';
 
 interface GroupsScreenProps {
   matches: Match[];
+  groupStandings?: GroupStanding[];
 }
 
-export default function GroupsScreen({ matches }: GroupsScreenProps) {
-  // Use INITIAL_GROUPS directly and add flags from matches
+export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScreenProps) {
   const groupsData = useMemo(() => {
-    // Map teams to their flags by looking into matches
+    // 1. Build a baseline dictionary from Supabase groupStandings
+    const baseline: Record<string, Record<string, GroupStanding>> = {};
+    
+    groupStandings.forEach(g => {
+      if (!baseline[g.group_name]) baseline[g.group_name] = {};
+      baseline[g.group_name][g.team_name] = { ...g }; // clone it
+    });
+
+    // We also need flags for teams, map them from matches
     const flagsMap: Record<string, string> = {};
     matches.forEach(m => {
       if (m.teamHome && m.flagHome) flagsMap[m.teamHome] = m.flagHome;
       if (m.teamAway && m.flagAway) flagsMap[m.teamAway] = m.flagAway;
     });
 
-    return INITIAL_GROUPS.map(group => ({
-      ...group,
-      teams: group.teams.map(team => ({
-        ...team,
-        flag: flagsMap[team.name] || ''
-      }))
-    }));
-  }, [matches]);
+    // 2. Add dynamically scored matches that happened after the baseline
+    // Any match with status 'Ao Vivo' OR 'Finalizado' that has valid scores.
+    matches.forEach(m => {
+      if (m.status !== 'Ao Vivo' && m.status !== 'Finalizado') return;
+      if (m.scoreHome === undefined || m.scoreHome === null) return;
+      if (m.scoreAway === undefined || m.scoreAway === null) return;
+      if (!m.group) return;
+
+      // We ensure the team exists in the baseline, if not create it
+      if (!baseline[m.group]) baseline[m.group] = {};
+      
+      const ensureTeam = (teamName: string) => {
+        if (!baseline[m.group][teamName]) {
+          baseline[m.group][teamName] = {
+            id: '', group_name: m.group, team_name: teamName,
+            j: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0, pts: 0
+          };
+        }
+        return baseline[m.group][teamName];
+      };
+
+      const home = ensureTeam(m.teamHome);
+      const away = ensureTeam(m.teamAway);
+
+      home.j += 1;
+      away.j += 1;
+      home.gp += m.scoreHome;
+      home.gc += m.scoreAway;
+      away.gp += m.scoreAway;
+      away.gc += m.scoreHome;
+
+      if (m.scoreHome > m.scoreAway) {
+        home.v += 1;
+        home.pts += 3;
+        away.d += 1;
+      } else if (m.scoreHome < m.scoreAway) {
+        away.v += 1;
+        away.pts += 3;
+        home.d += 1;
+      } else {
+        home.e += 1;
+        away.e += 1;
+        home.pts += 1;
+        away.pts += 1;
+      }
+
+      home.sg = home.gp - home.gc;
+      away.sg = away.gp - away.gc;
+    });
+
+    // 3. Format into array and sort correctly
+    const sortedGroups = Object.keys(baseline).sort().map((groupName) => {
+      const teams = Object.values(baseline[groupName]).map(t => ({
+        ...t,
+        flag: flagsMap[t.team_name] || ''
+      }));
+
+      teams.sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts; // Pontos
+        if (b.sg !== a.sg) return b.sg - a.sg;    // Saldo de Gols
+        if (b.gp !== a.gp) return b.gp - a.gp;    // Gols Pró
+        return a.team_name.localeCompare(b.team_name); // Ordem Alfabética
+      });
+      
+      return { groupName, teams };
+    });
+
+    return sortedGroups;
+  }, [matches, groupStandings]);
 
   const getInitials = (team: string) => {
     if (team === 'Brasil') return 'BRA';
@@ -73,7 +141,7 @@ export default function GroupsScreen({ matches }: GroupsScreenProps) {
                   <tbody>
                     {teams.map((team, index) => (
                       <tr 
-                        key={team.name} 
+                        key={team.team_name} 
                         className={`border-b border-[#f2f4f6] last:border-0 hover:bg-[#f7f9fb] transition-colors ${
                           index < 2 ? 'bg-[#f7fff2]/30' : ''
                         }`}
@@ -91,16 +159,16 @@ export default function GroupsScreen({ matches }: GroupsScreenProps) {
                               {team.flag ? (
                                 <img 
                                   src={team.flag} 
-                                  alt={`Bandeira de ${team.name}`} 
+                                  alt={`Bandeira de ${team.team_name}`} 
                                   className="w-full h-full object-cover scale-[1.08]"
                                   referrerPolicy="no-referrer"
                                 />
                               ) : (
-                                <span className="font-poppins font-bold text-[10px] text-[#6e7b6c]">{getInitials(team.name)}</span>
+                                <span className="font-poppins font-bold text-[10px] text-[#6e7b6c]">{getInitials(team.team_name)}</span>
                               )}
                             </div>
                             <span className="font-poppins font-semibold text-[#191c1e] text-sm truncate">
-                              {team.name}
+                              {team.team_name}
                             </span>
                           </div>
                         </td>

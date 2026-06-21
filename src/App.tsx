@@ -3,7 +3,7 @@ import {
   INITIAL_MATCHES, 
   INITIAL_USER_PROFILE 
 } from './data/initialData';
-import { Match, Prediction, UserProfile, Screen, MatchStatus } from './types';
+import { Match, Prediction, UserProfile, Screen, MatchStatus, GroupStanding } from './types';
 import Header from './components/Header';
 import BottomNavBar from './components/BottomNavBar';
 import MatchCard from './components/MatchCard';
@@ -46,6 +46,7 @@ export default function App() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
+  const [groupStandings, setGroupStandings] = useState<GroupStanding[]>([]);
 
   const [authView, setAuthView] = useState<'login' | 'register' | 'recovery'>('login');
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -169,13 +170,14 @@ export default function App() {
   };
 
   const loadData = async () => {
-    const [matchesRes, predictionsRes, profilesRes] = await Promise.all([
+    const [matchesRes, predictionsRes, profilesRes, groupStandingsRes] = await Promise.all([
       supabase.from('matches').select('*'),
       supabase.from('predictions').select(`
         *,
         profiles!inner(email, name, avatar)
       `),
-      supabase.from('profiles').select('id, email, name, avatar')
+      supabase.from('profiles').select('id, email, name, avatar'),
+      supabase.from('group_standings').select('*')
     ]);
 
     if (!matchesRes.error && matchesRes.data) {
@@ -212,6 +214,10 @@ export default function App() {
 
     if (!profilesRes.error && profilesRes.data) {
       setAllProfiles(profilesRes.data);
+    }
+
+    if (!groupStandingsRes.error && groupStandingsRes.data) {
+      setGroupStandings(groupStandingsRes.data);
     }
   };
 
@@ -553,7 +559,7 @@ export default function App() {
         );
 
       case 'groups':
-        return <GroupsScreen matches={matches} />;
+        return <GroupsScreen matches={matches} groupStandings={groupStandings} />;
 
       case 'profile':
         return (
