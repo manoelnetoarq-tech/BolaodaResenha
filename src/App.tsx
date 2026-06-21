@@ -518,6 +518,28 @@ export default function App() {
                 </div>
               </button>
 
+              {/* Copa do Brasil - Coming Soon */}
+              <button 
+                className="relative overflow-hidden bg-[#191c1e] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
+              >
+                <img 
+                  src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/copadobrasil.jfif" 
+                  alt="Copa do Brasil" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale mix-blend-luminosity z-0" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex justify-end w-full">
+                  <div className="bg-black/40 backdrop-blur-md border border-white/10 text-white/70 text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-sm">
+                    Em Breve
+                  </div>
+                </div>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="font-poppins font-black text-white/60 text-lg md:text-2xl leading-tight md:leading-tight drop-shadow-md">Copa do<br/>Brasil</h3>
+                  <p className="font-sans text-white/40 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1 drop-shadow-md">Nacional</p>
+                </div>
+              </button>
+
               {/* Champions - Coming Soon */}
               <button 
                 className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
