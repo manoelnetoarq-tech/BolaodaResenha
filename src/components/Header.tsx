@@ -33,6 +33,8 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
         return 'Grupos';
       case 'profile':
         return 'Meu Perfil';
+      case 'home':
+        return activeCompetition;
       default:
         return "Bolão da Resenha";
     }
@@ -53,7 +55,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
           )}
 
           <div 
-            onClick={() => onNavigate('home')} 
+            onClick={() => onNavigate('tournaments')} 
             className="flex items-center gap-3 cursor-pointer active:scale-98 transition-transform"
           >
             <img 
@@ -67,7 +69,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
             </span>
           </div>
 
-          {!hasBack && currentScreen !== 'home' && (
+          {!hasBack && currentScreen !== 'tournaments' && (
             <span className="hidden md:inline font-poppins font-medium text-lg text-[#191c1e] border-l-2 border-[#bdcaba] pl-4 ml-4">
               {getTitle()}
             </span>
@@ -75,61 +77,62 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
         </div>
 
 
-        {/* Desktop inline navigator */}
-        <nav className="hidden md:flex items-center gap-8">
-          <button
-            onClick={() => onNavigate('home')}
-            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-              currentScreen === 'home' || currentScreen === 'match-details'
-                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
-                : 'text-[#3e4a3d]'
-            }`}
-          >
-            Início
-          </button>
-          <button
-            onClick={() => onNavigate('ranking')}
-            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-              currentScreen === 'ranking'
-                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
-                : 'text-[#3e4a3d]'
-            }`}
-          >
-            Ranking
-          </button>
-          <button
-            onClick={() => onNavigate('groups')}
-            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-              currentScreen === 'groups'
-                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
-                : 'text-[#3e4a3d]'
-            }`}
-          >
-            Grupos
-          </button>
-          <button
-            onClick={() => onNavigate('chat')}
-            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-              currentScreen === 'chat'
-                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
-                : 'text-[#3e4a3d]'
-            }`}
-          >
-            Resenha
-          </button>
-          {isAdmin && (
+        {currentScreen !== 'tournaments' && (
+          <nav className="hidden md:flex items-center gap-8">
             <button
-              onClick={() => onNavigate('admin')}
+              onClick={() => onNavigate('home')}
               className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
-                currentScreen === 'admin'
+                currentScreen === 'home' || currentScreen === 'match-details'
                   ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
                   : 'text-[#3e4a3d]'
               }`}
             >
-              Admin
+              Início
             </button>
-          )}
-        </nav>
+            <button
+              onClick={() => onNavigate('ranking')}
+              className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+                currentScreen === 'ranking'
+                  ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                  : 'text-[#3e4a3d]'
+              }`}
+            >
+              Ranking
+            </button>
+            <button
+              onClick={() => onNavigate('groups')}
+              className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+                currentScreen === 'groups'
+                  ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                  : 'text-[#3e4a3d]'
+              }`}
+            >
+              Grupos
+            </button>
+            <button
+              onClick={() => onNavigate('chat')}
+              className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+                currentScreen === 'chat'
+                  ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                  : 'text-[#3e4a3d]'
+              }`}
+            >
+              Resenha
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => onNavigate('admin')}
+                className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+                  currentScreen === 'admin'
+                    ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                    : 'text-[#3e4a3d]'
+                }`}
+              >
+                Admin
+              </button>
+            )}
+          </nav>
+        )}
 
         {/* Profile trigger */}
         <button
