@@ -61,10 +61,10 @@ Atualizado em: 21 de junho de 2026
 ## Grupo H
 | # | Seleção | J | V | E | D | GP | GC | SG | Pts |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Uruguai | 1 | 0 | 1 | 0 | 1 | 1 | 0 | **1** |
-| 2 | Arábia Saudita | 1 | 0 | 1 | 0 | 1 | 1 | 0 | **1** |
-| 3 | Espanha | 1 | 0 | 1 | 0 | 0 | 0 | 0 | **1** |
-| 4 | Cabo Verde | 1 | 0 | 1 | 0 | 0 | 0 | 0 | **1** |
+| 1 | Espanha | 2 | 1 | 1 | 0 | 4 | 0 | +4 | **4** |
+| 2 | Uruguai | 1 | 0 | 1 | 0 | 1 | 1 | 0 | **1** |
+| 3 | Cabo Verde | 1 | 0 | 1 | 0 | 0 | 0 | 0 | **1** |
+| 4 | Arábia Saudita | 2 | 0 | 1 | 1 | 1 | 5 | -4 | **1** |
 
 ## Grupo I
 | # | Seleção | J | V | E | D | GP | GC | SG | Pts |
