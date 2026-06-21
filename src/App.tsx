@@ -9,6 +9,7 @@ import BottomNavBar from './components/BottomNavBar';
 import MatchCard from './components/MatchCard';
 import Leaderboard from './components/Leaderboard';
 import MatchDetailBetting from './components/MatchDetailBetting';
+import UpdateModal from './components/UpdateModal';
 import AdminPanel from './components/AdminPanel';
 import GroupsScreen from './components/GroupsScreen';
 import ProfileEdit from './components/ProfileEdit';
@@ -729,6 +730,8 @@ export default function App() {
         activeCompetition={activeCompetition}
         onSelectCompetition={setActiveCompetition}
       />
+
+      <UpdateModal />
 
       {/* Main Content Viewport */}
       <main className="flex-grow pt-24 md:pt-32 px-4 md:px-10 max-w-7xl mx-auto w-full transition-all">
