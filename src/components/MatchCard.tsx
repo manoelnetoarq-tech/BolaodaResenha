@@ -28,6 +28,7 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
 
   return (
     <article 
+      id={`match-card-${match.id}`}
       onClick={() => onSelect(match.id)}
       className="min-w-[82vw] sm:min-w-0 bg-white rounded-3xl p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col relative border border-transparent hover:border-[#006b2c]/10 hover:shadow-[0_12px_36px_rgba(15,23,42,0.09)] transition-all duration-300 cursor-pointer snap-center shrink-0"
     >

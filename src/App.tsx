@@ -10,6 +10,7 @@ import MatchCard from './components/MatchCard';
 import Leaderboard from './components/Leaderboard';
 import MatchDetailBetting from './components/MatchDetailBetting';
 import AdminPanel from './components/AdminPanel';
+import GroupsScreen from './components/GroupsScreen';
 import ProfileEdit from './components/ProfileEdit';
 import AuthScreens from './components/AuthScreens';
 import ChatScreen from './components/ChatScreen';
@@ -134,6 +135,23 @@ export default function App() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  // Scroll to next match when on home screen
+  useEffect(() => {
+    if (currentScreen === 'home' && matches.length > 0) {
+      const timer = setTimeout(() => {
+        const sortedAsc = [...matches].sort((a, b) => parseDateStr(a.dateStr) - parseDateStr(b.dateStr));
+        const nextMatch = sortedAsc.find(m => m.status === 'Aberto');
+        if (nextMatch) {
+          const el = document.getElementById(`match-card-${nextMatch.id}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentScreen, matches.length]);
 
   const loadUserProfile = async (userId: string) => {
     const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
@@ -397,7 +415,7 @@ export default function App() {
         });
 
         const liveMatches = sortedMatches.filter(m => m.status === 'Ao Vivo');
-        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo');
+        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo').reverse();
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
@@ -530,10 +548,12 @@ export default function App() {
             onUpdateMatchStatus={handleUpdateMatchStatus}
             onUpdateLiveScore={handleUpdateLiveScore}
             onLaunchResults={handleLaunchResults}
-            onUpdateLiveScore={handleUpdateLiveScore}
             onDeletePrediction={handleDeletePrediction}
           />
         );
+
+      case 'groups':
+        return <GroupsScreen matches={matches} />;
 
       case 'profile':
         return (

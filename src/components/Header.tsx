@@ -27,6 +27,8 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
         return 'Bate-Papo da Resenha';
       case 'ranking':
         return 'Ranking da Resenha';
+      case 'groups':
+        return 'Grupos';
       case 'profile':
         return 'Meu Perfil';
       default:
@@ -92,6 +94,16 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
             }`}
           >
             Ranking
+          </button>
+          <button
+            onClick={() => onNavigate('groups')}
+            className={`font-sans text-sm font-semibold px-1 py-1 transition-all hover:text-[#006b2c] cursor-pointer ${
+              currentScreen === 'groups'
+                ? 'text-[#006b2c] border-b-2 border-[#006b2c]'
+                : 'text-[#3e4a3d]'
+            }`}
+          >
+            Grupos
           </button>
           <button
             onClick={() => onNavigate('chat')}

@@ -65,6 +65,7 @@ export type Screen =
   | 'chat'
   | 'match-details'
   | 'ranking'
+  | 'groups'
   | 'profile'
   | 'edit-profile'
   | 'change-password'

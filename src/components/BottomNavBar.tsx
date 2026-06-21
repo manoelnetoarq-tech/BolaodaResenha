@@ -1,4 +1,4 @@
-import { Home, Trophy, Settings, MessageCircle } from 'lucide-react';
+import { Home, Trophy, Settings, MessageCircle, LayoutGrid } from 'lucide-react';
 import { Screen } from '../types';
 
 interface BottomNavBarProps {
@@ -11,10 +11,12 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
   const isInicioActive = ['home', 'match-details'].includes(currentScreen);
   const isRankingActive = currentScreen === 'ranking';
   const isChatActive = currentScreen === 'chat';
+  const isGroupsActive = currentScreen === 'groups';
   const isAdminActive = currentScreen === 'admin';
 
   const navItems = [
     { id: 'home', icon: Home, label: 'Início', isActive: isInicioActive },
+    { id: 'groups', icon: LayoutGrid, label: 'Grupos', isActive: isGroupsActive },
     { id: 'chat', icon: MessageCircle, label: 'Resenha', isActive: isChatActive },
     { id: 'ranking', icon: Trophy, label: 'Ranking', isActive: isRankingActive },
   ];
