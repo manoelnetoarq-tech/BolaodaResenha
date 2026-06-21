@@ -31,7 +31,11 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
       <article 
         id={`match-card-${match.id}`}
         onClick={() => onSelect(match.id)}
-        className="w-full bg-white rounded-3xl p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col relative z-10 border border-transparent hover:border-[#006b2c]/10 hover:shadow-[0_12px_36px_rgba(15,23,42,0.09)] transition-all duration-300 cursor-pointer"
+        className={`w-full bg-white rounded-3xl p-5 flex flex-col relative z-10 transition-all duration-300 cursor-pointer ${
+          match.status === 'Ao Vivo'
+            ? 'border-2 border-[#e01424] shadow-[0_8px_30px_rgba(224,20,36,0.2)]'
+            : 'border border-transparent shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:border-[#006b2c]/10 hover:shadow-[0_12px_36px_rgba(15,23,42,0.09)]'
+        }`}
       >
         {/* Top Info Bar */}
         <div className="flex justify-between items-center mb-4">
