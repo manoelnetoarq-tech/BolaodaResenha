@@ -435,114 +435,98 @@ export default function App() {
     switch (currentScreen) {
       case 'tournaments':
         return (
-          <div className="flex flex-col gap-6 animate-fade-in w-full pb-8">
-            <div className="mb-4">
-              <h2 className="font-poppins font-black text-3xl md:text-5xl text-[#191c1e] tracking-tight">
+          <div className="flex flex-col gap-4 animate-fade-in w-full pb-6">
+            <div className="mb-2">
+              <h2 className="font-poppins font-black text-2xl md:text-4xl text-[#191c1e] tracking-tight">
                 Escolha seu <span className="text-[#006b2c]">Bolão</span>
               </h2>
-              <p className="font-sans text-[#6e7b6c] mt-2 text-base md:text-lg max-w-xl">
+              <p className="font-sans text-[#6e7b6c] mt-1 text-sm md:text-base max-w-xl leading-snug">
                 Participe dos maiores torneios de futebol e prove que você é o melhor nas previsões.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               {/* Copa do Mundo - Active */}
               <button 
                 onClick={() => {
                   setActiveCompetition('Copa do Mundo');
                   setCurrentScreen('home');
                 }}
-                className="relative overflow-hidden bg-gradient-to-br from-[#006b2c] to-[#00873a] p-6 rounded-3xl text-left transition-all hover:scale-[1.02] active:scale-95 shadow-[0_15px_40px_-15px_rgba(0,107,44,0.5)] cursor-pointer group"
+                className="relative overflow-hidden bg-gradient-to-br from-[#006b2c] to-[#00873a] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left transition-all active:scale-95 shadow-[0_8px_20px_-8px_rgba(0,107,44,0.4)] hover:shadow-[0_12px_25px_-8px_rgba(0,107,44,0.5)] cursor-pointer group flex flex-col justify-between aspect-square"
               >
                 <div 
                   className="absolute inset-0 opacity-20 pointer-events-none transition-opacity group-hover:opacity-30" 
                   style={{
-                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 2px, transparent 0)',
-                    backgroundSize: '24px 24px'
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+                    backgroundSize: '16px 16px'
                   }}
                 ></div>
+                <div className="relative z-10 flex justify-between items-start w-full">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" alt="Copa do Mundo" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
+                  </div>
+                  <div className="bg-white/20 backdrop-blur-md border border-white/20 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#fed01b] animate-pulse"></span>
+                    Ativo
+                  </div>
+                </div>
                 <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className="bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#fed01b] animate-pulse"></span>
-                      Em Andamento
-                    </div>
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" alt="Copa do Mundo" className="w-8 h-8 object-contain drop-shadow-sm" />
-                    </div>
-                  </div>
-                  <h3 className="font-poppins font-black text-white text-2xl md:text-3xl mb-1">Copa do Mundo</h3>
-                  <p className="font-sans text-white/80 text-sm font-medium mb-6">América do Norte 2026</p>
-                  
-                  <div className="bg-white text-[#006b2c] font-bold text-sm text-center py-3 rounded-2xl shadow-sm transition-all group-hover:shadow-md group-hover:bg-[#f7f9fb]">
-                    Acessar Bolão
-                  </div>
+                  <h3 className="font-poppins font-black text-white text-lg md:text-2xl leading-tight md:leading-tight">Copa do<br/>Mundo</h3>
+                  <p className="font-sans text-white/80 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">América do Norte 2026</p>
                 </div>
               </button>
 
               {/* Brasileirão - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border-2 border-[#eceef0] p-6 rounded-3xl text-left opacity-90 cursor-default"
+                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
+                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
+                    <span className="text-xl md:text-2xl">🇧🇷</span>
+                  </div>
+                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                    Em Breve
+                  </div>
+                </div>
                 <div className="relative z-10 grayscale-[0.3]">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className="bg-[#f2f4f6] text-[#6e7b6c] text-xs font-bold px-3 py-1.5 rounded-full">
-                      Em Breve
-                    </div>
-                    <div className="w-12 h-12 bg-[#f7f9fb] rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                      <span className="text-xl">🇧🇷</span>
-                    </div>
-                  </div>
-                  <h3 className="font-poppins font-black text-[#191c1e] text-2xl md:text-3xl mb-1">Brasileirão</h3>
-                  <p className="font-sans text-[#6e7b6c] text-sm font-medium mb-6">Série A</p>
-                  
-                  <div className="bg-[#f7f9fb] text-[#bdcaba] font-bold text-sm text-center py-3 rounded-2xl">
-                    Aguarde
-                  </div>
+                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Brasileirão</h3>
+                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">Série A</p>
                 </div>
               </button>
 
               {/* Libertadores - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border-2 border-[#eceef0] p-6 rounded-3xl text-left opacity-90 cursor-default"
+                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
+                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
+                    <span className="text-xl md:text-2xl">🏆</span>
+                  </div>
+                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                    Em Breve
+                  </div>
+                </div>
                 <div className="relative z-10 grayscale-[0.3]">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className="bg-[#f2f4f6] text-[#6e7b6c] text-xs font-bold px-3 py-1.5 rounded-full">
-                      Em Breve
-                    </div>
-                    <div className="w-12 h-12 bg-[#f7f9fb] rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                      <span className="text-xl">🏆</span>
-                    </div>
-                  </div>
-                  <h3 className="font-poppins font-black text-[#191c1e] text-2xl md:text-3xl mb-1">Libertadores</h3>
-                  <p className="font-sans text-[#6e7b6c] text-sm font-medium mb-6">América do Sul</p>
-                  
-                  <div className="bg-[#f7f9fb] text-[#bdcaba] font-bold text-sm text-center py-3 rounded-2xl">
-                    Aguarde
-                  </div>
+                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Libertadores</h3>
+                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">América do Sul</p>
                 </div>
               </button>
 
               {/* Champions - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border-2 border-[#eceef0] p-6 rounded-3xl text-left opacity-90 cursor-default"
+                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
+                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
+                    <span className="text-xl md:text-2xl">⭐</span>
+                  </div>
+                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                    Em Breve
+                  </div>
+                </div>
                 <div className="relative z-10 grayscale-[0.3]">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className="bg-[#f2f4f6] text-[#6e7b6c] text-xs font-bold px-3 py-1.5 rounded-full">
-                      Em Breve
-                    </div>
-                    <div className="w-12 h-12 bg-[#f7f9fb] rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                      <span className="text-xl">⭐</span>
-                    </div>
-                  </div>
-                  <h3 className="font-poppins font-black text-[#191c1e] text-2xl md:text-3xl mb-1">Champions</h3>
-                  <p className="font-sans text-[#6e7b6c] text-sm font-medium mb-6">Europa</p>
-                  
-                  <div className="bg-[#f7f9fb] text-[#bdcaba] font-bold text-sm text-center py-3 rounded-2xl">
-                    Aguarde
-                  </div>
+                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Champions</h3>
+                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">Europa</p>
                 </div>
               </button>
             </div>
