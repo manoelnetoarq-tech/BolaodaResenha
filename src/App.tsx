@@ -540,21 +540,25 @@ export default function App() {
                 </div>
               </button>
 
-              {/* Champions - Coming Soon */}
+              {/* Champions Lige - Coming Soon */}
               <button 
-                className="relative overflow-hidden bg-white border border-[#eceef0] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
+                className="relative overflow-hidden bg-[#191c1e] p-4 md:p-5 rounded-2xl md:rounded-3xl text-left opacity-90 cursor-default flex flex-col justify-between aspect-square shadow-sm"
               >
-                <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                    <span className="text-xl md:text-2xl">⭐</span>
-                  </div>
-                  <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                <img 
+                  src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/Champions.png" 
+                  alt="Champions Lige" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale mix-blend-luminosity z-0" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex justify-end w-full">
+                  <div className="bg-black/40 backdrop-blur-md border border-white/10 text-white/70 text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-sm">
                     Em Breve
                   </div>
                 </div>
-                <div className="relative z-10 grayscale-[0.3]">
-                  <h3 className="font-poppins font-black text-[#191c1e] text-lg md:text-2xl leading-tight md:leading-tight">Champions</h3>
-                  <p className="font-sans text-[#6e7b6c] text-[10px] md:text-sm font-medium mt-0.5 md:mt-1">Europa</p>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="font-poppins font-black text-white/60 text-lg md:text-2xl leading-tight md:leading-tight drop-shadow-md">Champions<br/>Lige</h3>
+                  <p className="font-sans text-white/40 text-[10px] md:text-sm font-medium mt-0.5 md:mt-1 drop-shadow-md">Europa</p>
                 </div>
               </button>
             </div>
