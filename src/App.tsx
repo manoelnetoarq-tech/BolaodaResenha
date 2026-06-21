@@ -180,21 +180,32 @@ export default function App() {
       supabase.from('group_standings').select('*')
     ]);
 
+    const getFallbackFlag = (team: string) => {
+      const name = team === 'Países Baixos' ? 'Holanda' : team;
+      if (name === 'Tchéquia') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Republica%20Tcheca.png';
+      if (name === 'Holanda') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Paises%20Baixos.png';
+      return '';
+    };
+
     if (!matchesRes.error && matchesRes.data) {
-      setMatches(matchesRes.data.map(m => ({
-        id: m.id,
-        teamHome: m.team_home,
-        teamAway: m.team_away,
-        flagHome: m.flag_home,
-        flagAway: m.flag_away,
-        group: m.group,
-        dateStr: m.date_str,
-        status: m.status,
-        scoreHome: m.score_home,
-        scoreAway: m.score_away,
-        prize: m.prize,
-        prizeImage: m.prize_image
-      })));
+      setMatches(matchesRes.data.map(m => {
+        const teamHome = m.team_home === 'Países Baixos' ? 'Holanda' : m.team_home;
+        const teamAway = m.team_away === 'Países Baixos' ? 'Holanda' : m.team_away;
+        return {
+          id: m.id,
+          teamHome: teamHome,
+          teamAway: teamAway,
+          flagHome: m.flag_home || getFallbackFlag(teamHome),
+          flagAway: m.flag_away || getFallbackFlag(teamAway),
+          group: m.group,
+          dateStr: m.date_str,
+          status: m.status,
+          scoreHome: m.score_home,
+          scoreAway: m.score_away,
+          prize: m.prize,
+          prizeImage: m.prize_image
+        };
+      }));
     }
 
     if (!predictionsRes.error && predictionsRes.data) {
