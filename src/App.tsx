@@ -437,11 +437,11 @@ export default function App() {
       case 'tournaments':
         return (
           <div className="flex flex-col gap-4 animate-fade-in w-full pb-6">
-            <div className="mb-2">
+            <div className="mb-2 text-center">
               <h2 className="font-poppins font-black text-2xl md:text-4xl text-[#191c1e] tracking-tight">
                 Escolha seu <span className="text-[#006b2c]">Bolão</span>
               </h2>
-              <p className="font-sans text-[#6e7b6c] mt-1 text-sm md:text-base max-w-xl leading-snug">
+              <p className="font-sans text-[#6e7b6c] mt-1 text-sm md:text-base max-w-xl mx-auto leading-snug">
                 Participe dos maiores torneios de futebol e prove que você é o melhor nas previsões.
               </p>
             </div>
