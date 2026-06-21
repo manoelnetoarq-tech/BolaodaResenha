@@ -1,4 +1,4 @@
-import { Home, Trophy, Settings, MessageCircle, LayoutGrid } from 'lucide-react';
+import { Home, Trophy, Settings, MessageCircle, LayoutGrid, User, Edit3, Lock, Bell } from 'lucide-react';
 import { Screen } from '../types';
 
 interface BottomNavBarProps {
@@ -14,15 +14,30 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
   const isGroupsActive = currentScreen === 'groups';
   const isAdminActive = currentScreen === 'admin';
 
-  const navItems = [
-    { id: 'home', icon: Home, label: 'Início', isActive: isInicioActive },
-    { id: 'groups', icon: LayoutGrid, label: 'Grupos', isActive: isGroupsActive },
-    { id: 'chat', icon: MessageCircle, label: 'Resenha', isActive: isChatActive },
-    { id: 'ranking', icon: Trophy, label: 'Ranking', isActive: isRankingActive },
-  ];
-  
-  if (isAdmin) {
-    navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });
+  let navItems = [];
+
+  const isProfileMode = ['tournaments', 'profile', 'edit-profile', 'change-password', 'notifications'].includes(currentScreen);
+
+  if (isProfileMode) {
+    navItems = [
+      { id: 'profile', icon: User, label: 'Perfil', isActive: currentScreen === 'profile' },
+      { id: 'edit-profile', icon: Edit3, label: 'Editar', isActive: currentScreen === 'edit-profile' },
+      { id: 'change-password', icon: Lock, label: 'Senha', isActive: currentScreen === 'change-password' },
+      { id: 'notifications', icon: Bell, label: 'Avisos', isActive: currentScreen === 'notifications' },
+    ];
+    if (isAdmin) {
+      navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });
+    }
+  } else {
+    navItems = [
+      { id: 'home', icon: Home, label: 'Início', isActive: isInicioActive },
+      { id: 'groups', icon: LayoutGrid, label: 'Grupos', isActive: isGroupsActive },
+      { id: 'chat', icon: MessageCircle, label: 'Resenha', isActive: isChatActive },
+      { id: 'ranking', icon: Trophy, label: 'Ranking', isActive: isRankingActive },
+    ];
+    if (isAdmin) {
+      navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });
+    }
   }
 
   return (

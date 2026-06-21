@@ -68,22 +68,24 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
         </div>
 
         {/* Absolute Centered Logo */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-          <div 
-            onClick={() => onNavigate('tournaments')} 
-            className="flex items-center gap-2 md:gap-3 cursor-pointer active:scale-98 transition-transform pointer-events-auto"
-          >
-            <img 
-              src="/Logo.png" 
-              alt="Selman's Bet Logo" 
-              className="h-8 md:h-12 w-auto object-contain"
-              referrerPolicy="no-referrer"
-            />
-            <span className="font-poppins font-bold text-[#191c1e] text-base md:text-xl tracking-tight hidden sm:inline-block whitespace-nowrap">
-              Bolão da Resenha
-            </span>
+        {currentScreen !== 'tournaments' && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+            <div 
+              onClick={() => onNavigate('tournaments')} 
+              className="flex items-center gap-2 md:gap-3 cursor-pointer active:scale-98 transition-transform pointer-events-auto"
+            >
+              <img 
+                src="/Logo.png" 
+                alt="Selman's Bet Logo" 
+                className="h-8 md:h-12 w-auto object-contain"
+                referrerPolicy="no-referrer"
+              />
+              <span className="font-poppins font-bold text-[#191c1e] text-base md:text-xl tracking-tight hidden sm:inline-block whitespace-nowrap">
+                Bolão da Resenha
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Right side container to balance flex and prevent overlapping */}
         <div className="flex items-center justify-end gap-3 relative z-10 w-1/3">

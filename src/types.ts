@@ -76,6 +76,7 @@ export type Screen =
   | 'register'
   | 'recovery'
   | 'tournaments'
+  | 'notifications'
   | 'home'
   | 'chat'
   | 'match-details'
