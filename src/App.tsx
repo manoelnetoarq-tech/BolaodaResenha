@@ -142,14 +142,14 @@ export default function App() {
     if (currentScreen === 'home' && matches.length > 0) {
       const timer = setTimeout(() => {
         const sortedAsc = [...matches].sort((a, b) => parseDateStr(a.dateStr) - parseDateStr(b.dateStr));
-        const nextMatch = sortedAsc.find(m => m.status === 'Aberto');
+        const nextMatch = sortedAsc.find(m => m.status === 'Aberto' || m.status === 'Ao Vivo');
         if (nextMatch) {
           const el = document.getElementById(`match-card-${nextMatch.id}`);
           if (el) {
             el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
           }
         }
-      }, 300);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [currentScreen, matches.length]);
@@ -430,42 +430,10 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'home':
-        const sortedMatches = [...matches].sort((a, b) => {
-          if (a.status === 'Ao Vivo' && b.status !== 'Ao Vivo') return -1;
-          if (a.status !== 'Ao Vivo' && b.status === 'Ao Vivo') return 1;
-          return parseDateStr(a.dateStr) - parseDateStr(b.dateStr);
-        });
-
-        const liveMatches = sortedMatches.filter(m => m.status === 'Ao Vivo');
-        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo');
+        const allSortedMatches = [...matches].sort((a, b) => parseDateStr(a.dateStr) - parseDateStr(b.dateStr));
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
-            {liveMatches.length > 0 && (
-              <section className="flex flex-col items-center justify-center w-full mt-2">
-                <div className="w-full max-w-md animate-fade-in">
-                  <h3 className="text-center font-poppins font-bold text-[#e01424] mb-3 uppercase tracking-wider text-sm flex items-center justify-center gap-2 bg-[#ff2b3d]/10 py-1.5 px-4 rounded-full border border-[#ff4a5a]/20 w-max mx-auto shadow-sm">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#e01424] animate-pulse"></span>
-                    Partida Ao Vivo
-                  </h3>
-                  <div className="flex flex-col gap-4">
-                    {liveMatches.map((m) => (
-                      <MatchCard 
-                        key={m.id}
-                        match={m}
-                        predictions={predictions}
-                        currentUserEmail={currentUser.email}
-                        onSelect={(mid) => {
-                          setSelectedMatchId(mid);
-                          setCurrentScreen('match-details');
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
             {/* High Contrast Banner Welcome Section */}
             <section className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#006b2c] to-[#00873a] p-6 md:p-10 shadow-[0_10px_30px_rgba(15,23,42,0.08)] text-white mt-1 md:mt-2">
               <div 
@@ -485,7 +453,7 @@ export default function App() {
                 <div className="mt-6 flex gap-3 flex-wrap">
                   <button 
                     onClick={() => {
-                      const firstOpen = sortedMatches.find(m => m.status === 'Aberto');
+                      const firstOpen = allSortedMatches.find(m => m.status === 'Aberto' || m.status === 'Ao Vivo');
                       if (firstOpen) {
                         setSelectedMatchId(firstOpen.id);
                         setCurrentScreen('match-details');
@@ -519,8 +487,8 @@ export default function App() {
               </div>
 
               {/* Horizontal scroll container on mobile, fits beautiful card list */}
-              <div className="flex md:grid md:grid-cols-2 gap-4 overflow-x-auto no-scrollbar py-2 shrink-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
-                {scheduledMatches.map((match) => (
+              <div className="flex md:grid md:grid-cols-2 gap-4 overflow-x-auto no-scrollbar py-2 shrink-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
+                {allSortedMatches.map((match) => (
                   <MatchCard 
                     key={match.id}
                     match={match}
