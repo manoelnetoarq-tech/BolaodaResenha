@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
+import { parseDateStr } from '../App';
 
 interface CountdownTimerProps {
   dateStr: string;
@@ -7,21 +8,10 @@ interface CountdownTimerProps {
 }
 
 export default function CountdownTimer({ dateStr, status }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number; isExpired: boolean } | null>(null);
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number; isExpired: boolean } | null>(null);
 
   useEffect(() => {
     if (status !== 'Aberto') return;
-
-    const parseDateStr = (dateStr: string) => {
-      try {
-        const [datePart, timePart] = dateStr.split(' às ');
-        const [day, month, year] = datePart.split('/');
-        const [hour, minute] = timePart.split(':');
-        return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)).getTime();
-      } catch (e) {
-        return 0;
-      }
-    };
 
     const deadline = parseDateStr(dateStr);
     if (!deadline) return;
