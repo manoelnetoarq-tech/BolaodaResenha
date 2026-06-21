@@ -464,7 +464,7 @@ export default function App() {
                 ></div>
                 <div className="relative z-10 flex justify-between items-start w-full">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" alt="Copa do Mundo" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
+                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/copa.webp" alt="Copa do Mundo" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
                   </div>
                   <div className="bg-white/20 backdrop-blur-md border border-white/20 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#fed01b] animate-pulse"></span>
@@ -483,7 +483,7 @@ export default function App() {
               >
                 <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                    <span className="text-xl md:text-2xl">🇧🇷</span>
+                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/brasileiro.png" alt="Brasileirão" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
                   </div>
                   <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
                     Em Breve
@@ -501,7 +501,7 @@ export default function App() {
               >
                 <div className="relative z-10 flex justify-between items-start w-full grayscale-[0.3]">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-[#f7f9fb] rounded-xl md:rounded-2xl flex items-center justify-center border border-[#eceef0]">
-                    <span className="text-xl md:text-2xl">🏆</span>
+                    <img src="https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Campeonatos/Libertadores.png" alt="Libertadores" className="w-6 h-6 md:w-8 md:h-8 object-contain drop-shadow-sm" />
                   </div>
                   <div className="bg-[#f2f4f6] text-[#6e7b6c] text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full">
                     Em Breve
