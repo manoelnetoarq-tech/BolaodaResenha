@@ -30,9 +30,9 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
     const VALID_GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
     // 2. Add dynamically scored matches that happened after the baseline
-    // Any match with status 'Ao Vivo' OR 'Finalizado' that has valid scores.
+    // Only count matches that are completely finished
     matches.forEach(m => {
-      if (m.status !== 'Ao Vivo' && m.status !== 'Finalizado') return;
+      if (m.status !== 'Finalizado') return;
       if (m.scoreHome === undefined || m.scoreHome === null) return;
       if (m.scoreAway === undefined || m.scoreAway === null) return;
       if (!m.group || !VALID_GROUPS.includes(m.group.toUpperCase())) return;
