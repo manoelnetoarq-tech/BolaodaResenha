@@ -9,11 +9,15 @@ interface GroupsScreenProps {
 export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScreenProps) {
   const groupsData = useMemo(() => {
     // 1. Build a baseline dictionary from Supabase groupStandings
+    // We reset the stats to 0 so they are calculated purely from the matches table
     const baseline: Record<string, Record<string, GroupStanding>> = {};
     
     groupStandings.forEach(g => {
       if (!baseline[g.group_name]) baseline[g.group_name] = {};
-      baseline[g.group_name][g.team_name] = { ...g }; // clone it
+      baseline[g.group_name][g.team_name] = { 
+        ...g,
+        j: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0, pts: 0
+      };
     });
 
     // We also need flags for teams, map them from matches
