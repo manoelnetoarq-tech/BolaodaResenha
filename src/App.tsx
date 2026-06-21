@@ -184,6 +184,7 @@ export default function App() {
       const name = team === 'Países Baixos' ? 'Holanda' : team;
       if (name === 'Tchéquia' || name === 'República Tcheca') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Republica%20Tcheca.png';
       if (name === 'Holanda') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Paises%20Baixos.png';
+      if (name === 'Congo DR' || name === 'Congo') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Congo.png';
       return '';
     };
 
