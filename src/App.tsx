@@ -142,7 +142,7 @@ export default function App() {
     if (currentScreen === 'home' && matches.length > 0) {
       const timer = setTimeout(() => {
         const sortedAsc = [...matches].sort((a, b) => parseDateStr(a.dateStr) - parseDateStr(b.dateStr));
-        const nextMatch = sortedAsc.find(m => m.status === 'Aberto' || m.status === 'Ao Vivo');
+        const nextMatch = sortedAsc.find(m => m.status === 'Aberto');
         if (nextMatch) {
           const el = document.getElementById(`match-card-${nextMatch.id}`);
           if (el) {
@@ -515,7 +515,7 @@ export default function App() {
 
               {/* Horizontal scroll container on mobile, fits beautiful card list */}
               <div className="flex md:grid md:grid-cols-2 gap-4 overflow-x-auto no-scrollbar py-2 shrink-0 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
-                {scheduledMatches.map((match) => (
+                {allSortedMatches.map((match) => (
                   <MatchCard 
                     key={match.id}
                     match={match}
