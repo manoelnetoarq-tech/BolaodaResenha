@@ -40,6 +40,8 @@ export const parseDateStr = (dateStr: string) => {
 
 export default function App() {
   // 1. Core Persistent States
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeCompetition, setActiveCompetition] = useState('Copa do Mundo');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [authChecking, setAuthChecking] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<UserProfile>(INITIAL_USER_PROFILE);
@@ -436,23 +438,6 @@ export default function App() {
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
-            {/* Competition Tabs (Folder Style) */}
-            <div className="flex w-full overflow-x-auto no-scrollbar gap-1 border-b-2 border-[#006b2c] -mx-4 px-4 md:mx-0 md:px-0">
-              <button className="bg-[#006b2c] text-white px-5 py-2.5 rounded-t-xl font-bold text-sm whitespace-nowrap shadow-[0_-4px_10px_rgba(0,107,44,0.15)] z-10 relative cursor-pointer">
-                Copa do Mundo
-                {/* Seamless connection to bottom border */}
-                <span className="absolute -bottom-0.5 left-0 w-full h-1 bg-[#006b2c]"></span>
-              </button>
-              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
-                Brasileirão
-              </button>
-              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
-                Libertadores
-              </button>
-              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
-                Champions
-              </button>
-            </div>
             {liveMatches.length > 0 && (
               <section className="flex flex-col items-center justify-center w-full mt-1 mb-2">
                 <div className="w-full max-w-md animate-fade-in relative z-20">
@@ -639,11 +624,27 @@ export default function App() {
         onBack={handleBack}
         userAvatar={currentUser.avatar}
         isAdmin={currentUser.role === 'Admin da Resenha' || currentUser.role === 'Admin da Família'}
+        activeCompetition={activeCompetition}
+        onSelectCompetition={setActiveCompetition}
       />
 
       {/* Main Content Viewport */}
-      <main className="flex-grow pt-24 md:pt-32 px-4 md:px-10 max-w-7xl mx-auto w-full transition-all">
-        {renderScreen()}
+      <main className="flex-grow pt-[136px] md:pt-[152px] px-4 md:px-10 max-w-7xl mx-auto w-full transition-all">
+        {activeCompetition !== 'Copa do Mundo' ? (
+          <div className="flex flex-col items-center justify-center h-[50vh] text-center animate-fade-in">
+            <div className="w-20 h-20 bg-[#eceef0] rounded-full flex items-center justify-center mb-6 shadow-inner">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-[#8e9894]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h2 className="font-poppins font-bold text-2xl text-[#191c1e] mb-2">{activeCompetition}</h2>
+            <p className="text-[#6e7b6c] max-w-md font-sans">
+              Esta área está atualmente em construção. Em breve você poderá fazer seus palpites e resenhar sobre o {activeCompetition}!
+            </p>
+          </div>
+        ) : (
+          renderScreen()
+        )}
       </main>
 
       {/* Responsive Sticky bottom menu navigation for hand-held viewports */}

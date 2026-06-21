@@ -7,9 +7,11 @@ interface HeaderProps {
   onBack?: () => void;
   userAvatar: string;
   isAdmin?: boolean;
+  activeCompetition?: string;
+  onSelectCompetition?: (comp: string) => void;
 }
 
-export default function Header({ currentScreen, onNavigate, onBack, userAvatar, isAdmin }: HeaderProps) {
+export default function Header({ currentScreen, onNavigate, onBack, userAvatar, isAdmin, activeCompetition = 'Copa do Mundo', onSelectCompetition }: HeaderProps) {
   // Check if current screen is transactional / has back button
   const hasBack = ['match-details', 'edit-profile', 'change-password'].includes(currentScreen);
 
@@ -37,8 +39,8 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_10px_30px_rgba(15,23,42,0.06)] h-20 md:h-24 flex items-center transition-all">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between h-full relative">
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col transition-all">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between h-20 md:h-24 relative">
         <div className="flex items-center gap-3 relative z-10">
           {hasBack && (
             <button
@@ -147,6 +149,33 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
           )}
         </button>
       </div>
+
+      {/* Competition Tabs (Folder Style) */}
+      {['home', 'ranking', 'groups'].includes(currentScreen) && onSelectCompetition && (
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-end -mb-0.5 mt-auto">
+          <div className="flex w-full overflow-x-auto no-scrollbar gap-1 border-b-2 border-[#006b2c]">
+            {['Copa do Mundo', 'Brasileirão', 'Libertadores', 'Champions'].map((comp) => {
+              const isActive = activeCompetition === comp;
+              return (
+                <button 
+                  key={comp}
+                  onClick={() => onSelectCompetition(comp)}
+                  className={`px-5 py-2.5 rounded-t-xl font-bold text-sm whitespace-nowrap transition-all cursor-pointer relative ${
+                    isActive 
+                      ? 'bg-[#006b2c] text-white shadow-[0_-4px_10px_rgba(0,107,44,0.15)] z-10' 
+                      : 'bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] opacity-80'
+                  }`}
+                >
+                  {comp}
+                  {isActive && (
+                    <span className="absolute -bottom-0.5 left-0 w-full h-1 bg-[#006b2c]"></span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
