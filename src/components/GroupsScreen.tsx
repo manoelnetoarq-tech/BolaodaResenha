@@ -95,14 +95,31 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
           flag: flagsMap[t.team_name] || getFallbackFlag(t.team_name) || ''
         }));
 
-        teams.sort((a, b) => {
+        const sortedTeams = teams.sort((a, b) => {
           if (b.pts !== a.pts) return b.pts - a.pts; // Pontos
           if (b.sg !== a.sg) return b.sg - a.sg;    // Saldo de Gols
           if (b.gp !== a.gp) return b.gp - a.gp;    // Gols Pró
           return a.team_name.localeCompare(b.team_name); // Ordem Alfabética
         });
+
+        const formattedTeams = sortedTeams.map((t, index) => {
+          const maxPossiblePts = t.pts + ((3 - t.j) * 3);
+          let isEliminated = false;
+          
+          if (t.j === 3) {
+            // If all 3 matches are played, they are eliminated ONLY if they finish 4th.
+            // (3rd place still has a chance to qualify depending on other groups)
+            if (index === 3) isEliminated = true;
+          } else {
+            // If they haven't finished all matches, they are mathematically eliminated
+            // ONLY if they cannot even tie the CURRENT points of the 3rd place team.
+            if (maxPossiblePts < sortedTeams[2].pts) isEliminated = true;
+          }
+
+          return { ...t, isEliminated };
+        });
         
-        return { groupName, teams };
+        return { groupName, teams: formattedTeams };
       });
 
     return sortedGroups;
@@ -170,7 +187,7 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
                         </td>
                         <td className="py-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6] shrink-0">
+                            <div className={`w-8 h-8 rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6] shrink-0 ${team.isEliminated ? 'grayscale opacity-70' : ''}`}>
                               {team.flag ? (
                                 <img 
                                   src={team.flag} 
@@ -182,7 +199,7 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
                                 <span className="font-poppins font-bold text-[10px] text-[#6e7b6c]">{getInitials(team.team_name)}</span>
                               )}
                             </div>
-                            <span className="font-poppins font-semibold text-[#191c1e] text-sm truncate">
+                            <span className={`font-poppins font-semibold text-sm truncate ${team.isEliminated ? 'text-[#8e9894]' : 'text-[#191c1e]'}`}>
                               {team.team_name}
                             </span>
                           </div>
