@@ -421,7 +421,7 @@ export default function App() {
         });
 
         const liveMatches = sortedMatches.filter(m => m.status === 'Ao Vivo');
-        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo').reverse();
+        const scheduledMatches = sortedMatches.filter(m => m.status !== 'Ao Vivo');
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
