@@ -21,9 +21,7 @@ export default function BottomNavBar({ currentScreen, onNavigate, isAdmin }: Bot
   if (isProfileMode) {
     navItems = [
       { id: 'profile', icon: User, label: 'Perfil', isActive: currentScreen === 'profile' },
-      { id: 'edit-profile', icon: Edit3, label: 'Editar', isActive: currentScreen === 'edit-profile' },
       { id: 'chat', icon: MessageCircle, label: 'Resenha', isActive: currentScreen === 'chat' },
-      { id: 'notifications', icon: Bell, label: 'Avisos', isActive: currentScreen === 'notifications' },
     ];
     if (isAdmin) {
       navItems.push({ id: 'admin', icon: Settings, label: 'Admin', isActive: isAdminActive });
