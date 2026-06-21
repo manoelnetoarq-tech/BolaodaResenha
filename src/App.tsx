@@ -480,7 +480,7 @@ export default function App() {
                 <div className="mt-6 flex gap-3 flex-wrap">
                   <button 
                     onClick={() => {
-                      const firstOpen = allSortedMatches.find(m => m.status === 'Aberto' || m.status === 'Ao Vivo');
+                      const firstOpen = allSortedMatches.find(m => m.status === 'Aberto');
                       if (firstOpen) {
                         setSelectedMatchId(firstOpen.id);
                         setCurrentScreen('match-details');
