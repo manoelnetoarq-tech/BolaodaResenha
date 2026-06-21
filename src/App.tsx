@@ -747,7 +747,7 @@ export default function App() {
       />
 
       {/* Main Content Viewport */}
-      <main className="flex-grow pt-[136px] md:pt-[152px] px-4 md:px-10 max-w-7xl mx-auto w-full transition-all">
+      <main className="flex-grow pt-24 md:pt-32 px-4 md:px-10 max-w-7xl mx-auto w-full transition-all">
         {activeCompetition !== 'Copa do Mundo' ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center animate-fade-in">
             <div className="w-20 h-20 bg-[#eceef0] rounded-full flex items-center justify-center mb-6 shadow-inner">

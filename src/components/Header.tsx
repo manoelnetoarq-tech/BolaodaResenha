@@ -153,32 +153,6 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
         </button>
       </div>
 
-      {/* Competition Tabs (Folder Style) */}
-      {['home', 'ranking', 'groups'].includes(currentScreen) && onSelectCompetition && (
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-end -mb-0.5 mt-auto">
-          <div className="flex w-full overflow-x-auto no-scrollbar gap-1 border-b-2 border-[#006b2c]">
-            {['Copa do Mundo', 'Brasileirão', 'Libertadores', 'Champions'].map((comp) => {
-              const isActive = activeCompetition === comp;
-              return (
-                <button 
-                  key={comp}
-                  onClick={() => onSelectCompetition(comp)}
-                  className={`px-5 py-2.5 rounded-t-xl font-bold text-sm whitespace-nowrap transition-all cursor-pointer relative ${
-                    isActive 
-                      ? 'bg-[#006b2c] text-white shadow-[0_-4px_10px_rgba(0,107,44,0.15)] z-10' 
-                      : 'bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] opacity-80'
-                  }`}
-                >
-                  {comp}
-                  {isActive && (
-                    <span className="absolute -bottom-0.5 left-0 w-full h-1 bg-[#006b2c]"></span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </header>
   );
 }
