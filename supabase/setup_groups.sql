@@ -66,4 +66,5 @@ INSERT INTO public.group_standings (group_name, team_name, j, v, e, d, gp, gc, s
   ('L', 'Croácia', 1, 0, 0, 1, 2, 4, -2, 0);
 
 ALTER TABLE public.group_standings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.group_standings;
 CREATE POLICY "Enable read access for all users" ON public.group_standings FOR SELECT USING (true);
