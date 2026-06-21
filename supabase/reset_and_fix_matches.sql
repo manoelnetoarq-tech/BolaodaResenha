@@ -1,4 +1,4 @@
-TRUNCATE TABLE public.matches;
+TRUNCATE TABLE public.matches CASCADE;
 
 INSERT INTO public.matches ("group", team_home, team_away, date_str, status, score_home, score_away) VALUES
   -- PRIMEIRA RODADA
