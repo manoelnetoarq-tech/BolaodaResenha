@@ -181,11 +181,15 @@ export default function App() {
     ]);
 
     const getFallbackFlag = (team: string) => {
-      const name = team === 'Países Baixos' ? 'Holanda' : team;
-      if (name === 'Tchéquia' || name === 'República Tcheca') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Republica%20Tcheca.png';
-      if (name === 'Holanda') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Paises%20Baixos.png';
-      if (name === 'Congo DR' || name === 'Congo') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Congo.png';
-      return '';
+      // Special cases for different names
+      if (team === 'Tchéquia' || team === 'República Tcheca') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Republica%20Tcheca.png';
+      if (team === 'Holanda' || team === 'Países Baixos') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Paises%20Baixos.png';
+      if (team === 'Congo DR' || team === 'Congo' || team === 'República Democrática do Congo') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Congo.png';
+      if (team === 'Bósnia e Herzegovina') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Bosnia.png';
+
+      // Auto-generate for other teams: remove accents and encode URI
+      const nameWithoutAccents = team.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return `https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/${encodeURIComponent(nameWithoutAccents)}.png`;
     };
 
     if (!matchesRes.error && matchesRes.data) {
