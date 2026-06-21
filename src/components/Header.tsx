@@ -44,11 +44,13 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
     <header className="fixed top-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col transition-all">
       <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between h-20 md:h-24 relative">
         <div className="flex items-center gap-3 relative z-10 w-1/3">
-          {!isHubContext && (
+          {currentScreen !== 'tournaments' && (
             <button
               onClick={() => {
                 if (hasBack && onBack) {
                   onBack();
+                } else if (currentScreen === 'chat') {
+                  onNavigate('home');
                 } else {
                   onNavigate('tournaments');
                 }
