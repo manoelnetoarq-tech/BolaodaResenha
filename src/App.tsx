@@ -436,6 +436,23 @@ export default function App() {
         
         return (
           <div className="flex flex-col gap-6 animate-fade-in">
+            {/* Competition Tabs (Folder Style) */}
+            <div className="flex w-full overflow-x-auto no-scrollbar gap-1 border-b-2 border-[#006b2c] -mx-4 px-4 md:mx-0 md:px-0">
+              <button className="bg-[#006b2c] text-white px-5 py-2.5 rounded-t-xl font-bold text-sm whitespace-nowrap shadow-[0_-4px_10px_rgba(0,107,44,0.15)] z-10 relative cursor-pointer">
+                Copa do Mundo
+                {/* Seamless connection to bottom border */}
+                <span className="absolute -bottom-0.5 left-0 w-full h-1 bg-[#006b2c]"></span>
+              </button>
+              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
+                Brasileirão
+              </button>
+              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
+                Libertadores
+              </button>
+              <button className="bg-[#eceef0] hover:bg-[#e1e4e8] text-[#6e7b6c] px-4 py-2.5 rounded-t-xl font-semibold text-sm whitespace-nowrap transition-all cursor-pointer opacity-70">
+                Champions
+              </button>
+            </div>
             {liveMatches.length > 0 && (
               <section className="flex flex-col items-center justify-center w-full mt-1 mb-2">
                 <div className="w-full max-w-md animate-fade-in relative z-20">
