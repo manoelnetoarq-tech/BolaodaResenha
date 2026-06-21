@@ -41,41 +41,41 @@ INSERT INTO public.matches ("group", team_home, team_away, date_str, status, sco
 
   -- SEGUNDA RODADA
   -- Grupo A
-  ('A', 'México', 'Tchéquia', '17/06/2026 às 13:00', 'Finalizado', 2, 0),
-  ('A', 'Coreia do Sul', 'África do Sul', '17/06/2026 às 17:00', 'Finalizado', 0, 1),
+  ('A', 'México', 'Tchéquia', '17/06/2026 às 13:00', 'Ao Vivo', 2, 0),
+  ('A', 'Coreia do Sul', 'África do Sul', '17/06/2026 às 17:00', 'Ao Vivo', 0, 1),
   -- Grupo B
-  ('B', 'Canadá', 'Suíça', '18/06/2026 às 13:00', 'Finalizado', 1, 1),
-  ('B', 'Bósnia e Herzegovina', 'Catar', '18/06/2026 às 17:00', 'Finalizado', 1, 1),
+  ('B', 'Canadá', 'Suíça', '18/06/2026 às 13:00', 'Ao Vivo', 1, 1),
+  ('B', 'Bósnia e Herzegovina', 'Catar', '18/06/2026 às 17:00', 'Ao Vivo', 1, 1),
   -- Grupo C
-  ('C', 'Brasil', 'Marrocos', '18/06/2026 às 21:00', 'Finalizado', 1, 1),
-  ('C', 'Escócia', 'Haiti', '19/06/2026 às 13:00', 'Finalizado', 1, 0),
+  ('C', 'Brasil', 'Marrocos', '18/06/2026 às 21:00', 'Ao Vivo', 1, 1),
+  ('C', 'Escócia', 'Haiti', '19/06/2026 às 13:00', 'Ao Vivo', 1, 0),
   -- Grupo D
-  ('D', 'Estados Unidos', 'Turquia', '19/06/2026 às 17:00', 'Finalizado', 3, 0),
-  ('D', 'Austrália', 'Paraguai', '19/06/2026 às 21:00', 'Finalizado', 0, 2),
+  ('D', 'Estados Unidos', 'Turquia', '19/06/2026 às 17:00', 'Ao Vivo', 3, 0),
+  ('D', 'Austrália', 'Paraguai', '19/06/2026 às 21:00', 'Ao Vivo', 0, 2),
   -- Grupo E
-  ('E', 'Alemanha', 'Costa do Marfim', '20/06/2026 às 13:00', 'Finalizado', 2, 1),
-  ('E', 'Equador', 'Curaçao', '20/06/2026 às 17:00', 'Finalizado', 0, 0),
+  ('E', 'Alemanha', 'Costa do Marfim', '20/06/2026 às 13:00', 'Ao Vivo', 2, 1),
+  ('E', 'Equador', 'Curaçao', '20/06/2026 às 17:00', 'Ao Vivo', 0, 0),
   -- Grupo F
-  ('F', 'Holanda', 'Suécia', '20/06/2026 às 21:00', 'Finalizado', 4, 1),
-  ('F', 'Japão', 'Tunísia', '21/06/2026 às 13:00', 'Finalizado', 2, 2),
+  ('F', 'Holanda', 'Suécia', '20/06/2026 às 21:00', 'Ao Vivo', 4, 1),
+  ('F', 'Japão', 'Tunísia', '21/06/2026 às 13:00', 'Ao Vivo', 2, 2),
   -- Grupo G
-  ('G', 'Nova Zelândia', 'Bélgica', '21/06/2026 às 17:00', 'Finalizado', 0, 0),
-  ('G', 'Irã', 'Egito', '21/06/2026 às 21:00', 'Finalizado', 0, 0),
+  ('G', 'Nova Zelândia', 'Bélgica', '21/06/2026 às 17:00', 'Ao Vivo', 0, 0),
+  ('G', 'Irã', 'Egito', '21/06/2026 às 21:00', 'Ao Vivo', 0, 0),
   -- Grupo H
-  ('H', 'Uruguai', 'Espanha', '22/06/2026 às 13:00', 'Finalizado', 0, 0),
-  ('H', 'Arábia Saudita', 'Cabo Verde', '22/06/2026 às 17:00', 'Finalizado', 0, 0),
+  ('H', 'Uruguai', 'Espanha', '22/06/2026 às 13:00', 'Ao Vivo', 0, 0),
+  ('H', 'Arábia Saudita', 'Cabo Verde', '22/06/2026 às 17:00', 'Ao Vivo', 0, 0),
   -- Grupo I
-  ('I', 'Noruega', 'Senegal', '22/06/2026 às 21:00', 'Finalizado', 0, 0),
-  ('I', 'França', 'Iraque', '23/06/2026 às 13:00', 'Finalizado', 0, 0),
+  ('I', 'Noruega', 'Senegal', '22/06/2026 às 21:00', 'Ao Vivo', 0, 0),
+  ('I', 'França', 'Iraque', '23/06/2026 às 13:00', 'Ao Vivo', 0, 0),
   -- Grupo J
-  ('J', 'Argentina', 'Jordânia', '23/06/2026 às 17:00', 'Finalizado', 0, 0),
-  ('J', 'Áustria', 'Argélia', '23/06/2026 às 21:00', 'Finalizado', 0, 0),
+  ('J', 'Argentina', 'Jordânia', '23/06/2026 às 17:00', 'Ao Vivo', 0, 0),
+  ('J', 'Áustria', 'Argélia', '23/06/2026 às 21:00', 'Ao Vivo', 0, 0),
   -- Grupo K
-  ('K', 'Colômbia', 'Portugal', '24/06/2026 às 13:00', 'Finalizado', 0, 0),
-  ('K', 'Congo DR', 'Uzbequistão', '24/06/2026 às 17:00', 'Finalizado', 0, 0),
+  ('K', 'Colômbia', 'Portugal', '24/06/2026 às 13:00', 'Ao Vivo', 0, 0),
+  ('K', 'Congo DR', 'Uzbequistão', '24/06/2026 às 17:00', 'Ao Vivo', 0, 0),
   -- Grupo L
-  ('L', 'Inglaterra', 'Panamá', '24/06/2026 às 21:00', 'Finalizado', 0, 0),
-  ('L', 'Gana', 'Croácia', '25/06/2026 às 13:00', 'Finalizado', 0, 0),
+  ('L', 'Inglaterra', 'Panamá', '24/06/2026 às 21:00', 'Ao Vivo', 0, 0),
+  ('L', 'Gana', 'Croácia', '25/06/2026 às 13:00', 'Ao Vivo', 0, 0),
 
   -- TERCEIRA RODADA
   -- Grupo A
