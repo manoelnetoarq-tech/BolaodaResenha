@@ -23,25 +23,29 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
       if (m.teamAway && m.flagAway) flagsMap[m.teamAway] = m.flagAway;
     });
 
+    const VALID_GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+
     // 2. Add dynamically scored matches that happened after the baseline
     // Any match with status 'Ao Vivo' OR 'Finalizado' that has valid scores.
     matches.forEach(m => {
       if (m.status !== 'Ao Vivo' && m.status !== 'Finalizado') return;
       if (m.scoreHome === undefined || m.scoreHome === null) return;
       if (m.scoreAway === undefined || m.scoreAway === null) return;
-      if (!m.group) return;
+      if (!m.group || !VALID_GROUPS.includes(m.group.toUpperCase())) return;
+
+      const groupKey = m.group.toUpperCase();
 
       // We ensure the team exists in the baseline, if not create it
-      if (!baseline[m.group]) baseline[m.group] = {};
+      if (!baseline[groupKey]) baseline[groupKey] = {};
       
       const ensureTeam = (teamName: string) => {
-        if (!baseline[m.group][teamName]) {
-          baseline[m.group][teamName] = {
-            id: '', group_name: m.group, team_name: teamName,
+        if (!baseline[groupKey][teamName]) {
+          baseline[groupKey][teamName] = {
+            id: '', group_name: groupKey, team_name: teamName,
             j: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0, pts: 0
           };
         }
-        return baseline[m.group][teamName];
+        return baseline[groupKey][teamName];
       };
 
       const home = ensureTeam(m.teamHome);
@@ -74,21 +78,24 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
     });
 
     // 3. Format into array and sort correctly
-    const sortedGroups = Object.keys(baseline).sort().map((groupName) => {
-      const teams = Object.values(baseline[groupName]).map(t => ({
-        ...t,
-        flag: flagsMap[t.team_name] || ''
-      }));
+    const sortedGroups = Object.keys(baseline)
+      .filter(groupName => VALID_GROUPS.includes(groupName)) // <-- Ensure only valid groups
+      .sort((a, b) => a.localeCompare(b))
+      .map((groupName) => {
+        const teams = Object.values(baseline[groupName]).map(t => ({
+          ...t,
+          flag: flagsMap[t.team_name] || ''
+        }));
 
-      teams.sort((a, b) => {
-        if (b.pts !== a.pts) return b.pts - a.pts; // Pontos
-        if (b.sg !== a.sg) return b.sg - a.sg;    // Saldo de Gols
-        if (b.gp !== a.gp) return b.gp - a.gp;    // Gols Pró
-        return a.team_name.localeCompare(b.team_name); // Ordem Alfabética
+        teams.sort((a, b) => {
+          if (b.pts !== a.pts) return b.pts - a.pts; // Pontos
+          if (b.sg !== a.sg) return b.sg - a.sg;    // Saldo de Gols
+          if (b.gp !== a.gp) return b.gp - a.gp;    // Gols Pró
+          return a.team_name.localeCompare(b.team_name); // Ordem Alfabética
+        });
+        
+        return { groupName, teams };
       });
-      
-      return { groupName, teams };
-    });
 
     return sortedGroups;
   }, [matches, groupStandings]);
