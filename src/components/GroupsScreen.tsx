@@ -78,13 +78,20 @@ export default function GroupsScreen({ matches, groupStandings = [] }: GroupsScr
     });
 
     // 3. Format into array and sort correctly
+    const getFallbackFlag = (team: string) => {
+      const name = team === 'Países Baixos' ? 'Holanda' : team;
+      if (name === 'Tchéquia' || name === 'República Tcheca') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Republica%20Tcheca.png';
+      if (name === 'Holanda') return 'https://avjcjgsosfewukkdsgri.supabase.co/storage/v1/object/public/Bandeiras/Paises%20Baixos.png';
+      return '';
+    };
+
     const sortedGroups = Object.keys(baseline)
       .filter(groupName => VALID_GROUPS.includes(groupName)) // <-- Ensure only valid groups
       .sort((a, b) => a.localeCompare(b))
       .map((groupName) => {
         const teams = Object.values(baseline[groupName]).map(t => ({
           ...t,
-          flag: flagsMap[t.team_name] || ''
+          flag: flagsMap[t.team_name] || getFallbackFlag(t.team_name) || ''
         }));
 
         teams.sort((a, b) => {
