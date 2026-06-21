@@ -43,10 +43,16 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#f7f9fb] shadow-[0_10px_30px_rgba(15,23,42,0.06)] flex flex-col transition-all">
       <div className="w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between h-20 md:h-24 relative">
-        <div className="flex items-center gap-3 relative z-10">
-          {hasBack && (
+        <div className="flex items-center gap-3 relative z-10 w-1/3">
+          {currentScreen !== 'tournaments' && (
             <button
-              onClick={onBack}
+              onClick={() => {
+                if (hasBack && onBack) {
+                  onBack();
+                } else {
+                  onNavigate('tournaments');
+                }
+              }}
               aria-label="Voltar"
               className="p-2 -ml-2 rounded-full text-[#006b2c] hover:bg-[#eceef0] active:scale-95 transition-all cursor-pointer flex items-center justify-center"
             >
@@ -54,27 +60,33 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
             </button>
           )}
 
-          <div 
-            onClick={() => onNavigate('tournaments')} 
-            className="flex items-center gap-3 cursor-pointer active:scale-98 transition-transform"
-          >
-            <img 
-              src="/Logo.png" 
-              alt="Selman's Bet Logo" 
-              className="h-10 md:h-12 w-auto object-contain"
-              referrerPolicy="no-referrer"
-            />
-            <span className="font-poppins font-bold text-[#191c1e] text-lg md:text-xl tracking-tight">
-              Bolão da Resenha
-            </span>
-          </div>
-
           {!hasBack && currentScreen !== 'tournaments' && (
-            <span className="hidden md:inline font-poppins font-medium text-lg text-[#191c1e] border-l-2 border-[#bdcaba] pl-4 ml-4">
+            <span className="hidden lg:inline font-poppins font-medium text-lg text-[#191c1e] border-l-2 border-[#bdcaba] pl-4">
               {getTitle()}
             </span>
           )}
         </div>
+
+        {/* Absolute Centered Logo */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+          <div 
+            onClick={() => onNavigate('tournaments')} 
+            className="flex items-center gap-2 md:gap-3 cursor-pointer active:scale-98 transition-transform pointer-events-auto"
+          >
+            <img 
+              src="/Logo.png" 
+              alt="Selman's Bet Logo" 
+              className="h-8 md:h-12 w-auto object-contain"
+              referrerPolicy="no-referrer"
+            />
+            <span className="font-poppins font-bold text-[#191c1e] text-base md:text-xl tracking-tight hidden sm:inline-block whitespace-nowrap">
+              Bolão da Resenha
+            </span>
+          </div>
+        </div>
+
+        {/* Right side container to balance flex and prevent overlapping */}
+        <div className="flex items-center justify-end gap-3 relative z-10 w-1/3">
 
 
         {currentScreen !== 'tournaments' && (
@@ -152,7 +164,7 @@ export default function Header({ currentScreen, onNavigate, onBack, userAvatar, 
           )}
         </button>
       </div>
-
+      </div>
     </header>
   );
 }
