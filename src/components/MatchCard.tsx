@@ -8,9 +8,10 @@ interface MatchCardProps {
   predictions: Prediction[];
   currentUserEmail: string;
   onSelect: (matchId: string) => void;
+  compact?: boolean;
 }
 
-export default function MatchCard({ match, predictions, currentUserEmail, onSelect }: MatchCardProps) {
+export default function MatchCard({ match, predictions, currentUserEmail, onSelect, compact = false }: MatchCardProps) {
   const matchPredictions = predictions.filter(p => p.matchId === match.id);
   const userPrediction = matchPredictions.find(p => p.userEmail === currentUserEmail);
 
@@ -31,14 +32,14 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
       <article 
         id={`match-card-${match.id}`}
         onClick={() => onSelect(match.id)}
-        className={`w-full bg-white rounded-3xl p-5 flex flex-col relative z-10 transition-all duration-300 cursor-pointer ${
+        className={`w-full bg-white rounded-3xl ${compact ? 'p-3' : 'p-5'} flex flex-col relative z-10 transition-all duration-300 cursor-pointer ${
           match.status === 'Ao Vivo'
             ? 'border-2 border-[#e01424] shadow-[0_8px_30px_rgba(224,20,36,0.2)]'
             : 'border border-transparent shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:border-[#006b2c]/10 hover:shadow-[0_12px_36px_rgba(15,23,42,0.09)]'
         }`}
       >
         {/* Top Info Bar */}
-        <div className="flex justify-between items-center mb-4">
+        <div className={`flex justify-between items-center ${compact ? 'mb-2' : 'mb-4'}`}>
           {match.status === 'Aberto' && (
             <span className="bg-[#f7fff2] text-[#006b2c] font-sans text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-[#006b2c]/10">
               <span className="w-2 h-2 rounded-full bg-[#00873a] animate-pulse"></span>
@@ -71,10 +72,10 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
         </div>
 
         {/* Teams Matchup Row */}
-        <div className="flex items-center justify-between my-4 grow">
+        <div className={`flex items-center justify-between ${compact ? 'my-2' : 'my-4'} grow`}>
           {/* Team 1 */}
           <div className="flex flex-col items-center gap-2 flex-1 text-center select-none">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6]">
+            <div className={`${compact ? 'w-10 h-10 md:w-12 md:h-12' : 'w-14 h-14 md:w-16 md:h-16'} rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6]`}>
               {match.flagHome ? (
                 <img 
                   src={match.flagHome} 
@@ -86,14 +87,14 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
                 <span className="font-poppins font-bold text-[#6e7b6c]">{getInitials(match.teamHome)}</span>
               )}
             </div>
-            <span className="font-poppins font-semibold text-sm md:text-base text-[#191c1e] truncate max-w-[100px]">
+            <span className={`font-poppins font-semibold ${compact ? 'text-xs md:text-sm' : 'text-sm md:text-base'} text-[#191c1e] truncate max-w-[100px]`}>
               {match.teamHome}
             </span>
           </div>
 
           {/* VS / Score Divider */}
           <div className="flex flex-col items-center justify-center px-3 z-10">
-            <div className={`font-poppins font-bold text-lg md:text-xl px-3 py-1 rounded-xl flex flex-col items-center border shadow-sm ${
+            <div className={`font-poppins font-bold ${compact ? 'text-base md:text-lg px-2' : 'text-lg md:text-xl px-3'} py-1 rounded-xl flex flex-col items-center border shadow-sm ${
               match.status === 'Ao Vivo'
                 ? 'border-[#fed01b] bg-[#fff9e6] text-[#735c00]' 
                 : 'border-[#555b70]/20 bg-[#555b70]/10 text-[#191c1e]'
@@ -113,7 +114,7 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
 
           {/* Team 2 */}
           <div className="flex flex-col items-center gap-2 flex-1 text-center select-none">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6]">
+            <div className={`${compact ? 'w-10 h-10 md:w-12 md:h-12' : 'w-14 h-14 md:w-16 md:h-16'} rounded-full overflow-hidden border border-[#eceef0] shadow-sm flex items-center justify-center bg-[#f2f4f6]`}>
               {match.flagAway ? (
                 <img 
                   src={match.flagAway} 
@@ -125,14 +126,14 @@ export default function MatchCard({ match, predictions, currentUserEmail, onSele
                 <span className="font-poppins font-bold text-[#6e7b6c]">{getInitials(match.teamAway)}</span>
               )}
             </div>
-            <span className="font-poppins font-semibold text-sm md:text-base text-[#191c1e] truncate max-w-[100px]">
+            <span className={`font-poppins font-semibold ${compact ? 'text-xs md:text-sm' : 'text-sm md:text-base'} text-[#191c1e] truncate max-w-[100px]`}>
               {match.teamAway}
             </span>
           </div>
         </div>
 
         {/* Footer Details Card */}
-        <div className="mt-auto pt-4 border-t border-[#f2f4f6] flex flex-col gap-2">
+        <div className={`mt-auto pt-3 border-t border-[#f2f4f6] flex flex-col ${compact ? 'hidden' : 'gap-2'}`}>
           <div className="flex items-center justify-between">
             {userPrediction ? (
               <div className="flex flex-col">

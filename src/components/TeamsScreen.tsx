@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Match, Prediction, UserProfile } from '../types';
 import MatchCard from './MatchCard';
-import { ArrowLeft, Flag } from 'lucide-react';
+import { ArrowLeft, Flag, Users } from 'lucide-react';
 
 interface TeamsScreenProps {
   matches: Match[];
@@ -12,6 +12,7 @@ interface TeamsScreenProps {
 
 export default function TeamsScreen({ matches, predictions, currentUser, onSelectMatch }: TeamsScreenProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'jogos' | 'escalacao'>('jogos');
 
   // Extract unique teams
   const uniqueTeams = useMemo(() => {
@@ -40,25 +41,67 @@ export default function TeamsScreen({ matches, predictions, currentUser, onSelec
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="font-poppins font-black text-xl md:text-2xl text-[#191c1e]">
-            Jogos: <span className="text-[#006b2c]">{selectedTeam}</span>
-          </h2>
+          <div className="flex items-center gap-2">
+            {uniqueTeams.find(t => t.name === selectedTeam)?.flag && (
+              <img 
+                src={uniqueTeams.find(t => t.name === selectedTeam)?.flag} 
+                alt={selectedTeam} 
+                className="w-8 h-8 rounded-full object-cover border border-[#eceef0]" 
+              />
+            )}
+            <h2 className="font-poppins font-black text-2xl text-[#191c1e]">
+              {selectedTeam}
+            </h2>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {filteredMatches.length > 0 ? (
-            filteredMatches.map(m => (
-              <MatchCard 
-                key={m.id}
-                match={m}
-                predictions={predictions}
-                currentUserEmail={currentUser.email}
-                onSelect={onSelectMatch}
-              />
-            ))
+        {/* Tab Navigation */}
+        <div className="flex w-full bg-[#f2f4f6] p-1 rounded-2xl mb-2">
+          <button
+            onClick={() => setActiveTab('jogos')}
+            className={`flex-1 font-sans text-sm font-bold py-2.5 rounded-xl transition-all ${
+              activeTab === 'jogos' ? 'bg-white text-[#006b2c] shadow-sm' : 'text-[#6e7b6c] hover:text-[#3e4a3d]'
+            }`}
+          >
+            Jogos
+          </button>
+          <button
+            onClick={() => setActiveTab('escalacao')}
+            className={`flex-1 font-sans text-sm font-bold py-2.5 rounded-xl transition-all ${
+              activeTab === 'escalacao' ? 'bg-white text-[#006b2c] shadow-sm' : 'text-[#6e7b6c] hover:text-[#3e4a3d]'
+            }`}
+          >
+            Escalação
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {activeTab === 'jogos' ? (
+            filteredMatches.length > 0 ? (
+              filteredMatches.map(m => (
+                <MatchCard 
+                  key={m.id}
+                  match={m}
+                  predictions={predictions}
+                  currentUserEmail={currentUser.email}
+                  onSelect={onSelectMatch}
+                  compact={true}
+                />
+              ))
+            ) : (
+              <div className="text-center p-8 bg-white rounded-3xl border border-[#eceef0]">
+                <p className="text-[#6e7b6c] font-sans">Nenhum jogo encontrado.</p>
+              </div>
+            )
           ) : (
-            <div className="text-center p-8 bg-white rounded-3xl border border-[#eceef0]">
-              <p className="text-[#6e7b6c] font-sans">Nenhum jogo encontrado.</p>
+            <div className="text-center p-8 bg-white rounded-3xl border border-[#eceef0] flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-[#fed01b]/20 flex items-center justify-center text-[#735c00]">
+                <Users className="w-6 h-6" />
+              </div>
+              <p className="text-[#3e4a3d] font-poppins font-bold">Escalação Oficial</p>
+              <p className="text-[#6e7b6c] font-sans text-sm">
+                As convocações oficiais e escalações de {selectedTeam} estarão disponíveis em breve.
+              </p>
             </div>
           )}
         </div>
