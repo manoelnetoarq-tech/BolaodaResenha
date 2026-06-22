@@ -110,7 +110,7 @@ export default function MatchDetailBetting({
         <div className="flex flex-col items-center text-center relative z-10">
           <div className="flex items-center gap-2 mb-3">
             <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#fed01b]/10 text-[#6f5900] font-sans text-[10px] font-bold uppercase tracking-wider">
-              {match.group}
+              Grupo {match.group}
             </span>
 
             {match.status === 'Aberto' && (
