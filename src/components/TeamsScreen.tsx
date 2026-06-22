@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
-import { Match, Prediction, UserProfile } from '../types';
+import { useState, useMemo, useEffect } from 'react';
+import { Match, Prediction, UserProfile, TeamSquad } from '../types';
+import { supabase } from '../lib/supabase';
 import MatchCard from './MatchCard';
 import { ArrowLeft, Flag, Users } from 'lucide-react';
 
@@ -13,6 +14,29 @@ interface TeamsScreenProps {
 export default function TeamsScreen({ matches, predictions, currentUser, onSelectMatch }: TeamsScreenProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'jogos' | 'escalacao'>('jogos');
+  const [squadData, setSquadData] = useState<TeamSquad | null>(null);
+  const [loadingSquad, setLoadingSquad] = useState(false);
+
+  useEffect(() => {
+    if (selectedTeam && activeTab === 'escalacao') {
+      const fetchSquad = async () => {
+        setLoadingSquad(true);
+        const { data, error } = await supabase
+          .from('team_squads')
+          .select('*')
+          .eq('team_name', selectedTeam)
+          .single();
+        
+        if (data && !error) {
+          setSquadData(data as TeamSquad);
+        } else {
+          setSquadData(null);
+        }
+        setLoadingSquad(false);
+      };
+      fetchSquad();
+    }
+  }, [selectedTeam, activeTab]);
 
   // Extract unique teams
   const uniqueTeams = useMemo(() => {
@@ -94,14 +118,102 @@ export default function TeamsScreen({ matches, predictions, currentUser, onSelec
               </div>
             )
           ) : (
-            <div className="text-center p-8 bg-white rounded-3xl border border-[#eceef0] flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-[#fed01b]/20 flex items-center justify-center text-[#735c00]">
-                <Users className="w-6 h-6" />
-              </div>
-              <p className="text-[#3e4a3d] font-poppins font-bold">Escalação Oficial</p>
-              <p className="text-[#6e7b6c] font-sans text-sm">
-                As convocações oficiais e escalações de {selectedTeam} estarão disponíveis em breve.
-              </p>
+            <div className="flex flex-col gap-4 animate-fade-in">
+              {loadingSquad ? (
+                <div className="flex justify-center items-center py-10">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#006b2c]"></div>
+                </div>
+              ) : squadData ? (
+                <>
+                  <div className="bg-white rounded-3xl border border-[#eceef0] p-5 shadow-sm">
+                    <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-1">Técnico</h3>
+                    <p className="font-sans text-[#3e4a3d] text-base">{squadData.coach || 'Não informado'}</p>
+                    
+                    {squadData.probable_formation && (
+                      <div className="mt-4">
+                        <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-1">Escalação Provável ({squadData.probable_formation})</h3>
+                        <p className="font-sans text-[#3e4a3d] text-sm leading-relaxed">
+                          {squadData.probable_lineup ? squadData.probable_lineup.replace('** ', '') : 'Não informada'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {squadData.goalkeepers && squadData.goalkeepers.length > 0 && (
+                    <div className="bg-white rounded-3xl border border-[#eceef0] p-5 shadow-sm">
+                      <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-3 flex items-center gap-2">
+                        <div className="w-2 h-6 bg-[#006b2c] rounded-full"></div>
+                        Goleiros
+                      </h3>
+                      <ul className="flex flex-col gap-2">
+                        {squadData.goalkeepers.map((gk, idx) => (
+                          <li key={idx} className="font-sans text-[#3e4a3d] text-sm bg-[#f2f4f6] px-3 py-2 rounded-xl border border-[#eceef0]">
+                            {gk}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {squadData.defenders && squadData.defenders.length > 0 && (
+                    <div className="bg-white rounded-3xl border border-[#eceef0] p-5 shadow-sm">
+                      <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-3 flex items-center gap-2">
+                        <div className="w-2 h-6 bg-[#006b2c] rounded-full"></div>
+                        Defensores
+                      </h3>
+                      <ul className="flex flex-col gap-2">
+                        {squadData.defenders.map((def, idx) => (
+                          <li key={idx} className="font-sans text-[#3e4a3d] text-sm bg-[#f2f4f6] px-3 py-2 rounded-xl border border-[#eceef0]">
+                            {def}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {squadData.midfielders && squadData.midfielders.length > 0 && (
+                    <div className="bg-white rounded-3xl border border-[#eceef0] p-5 shadow-sm">
+                      <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-3 flex items-center gap-2">
+                        <div className="w-2 h-6 bg-[#006b2c] rounded-full"></div>
+                        Meio-campistas
+                      </h3>
+                      <ul className="flex flex-col gap-2">
+                        {squadData.midfielders.map((mid, idx) => (
+                          <li key={idx} className="font-sans text-[#3e4a3d] text-sm bg-[#f2f4f6] px-3 py-2 rounded-xl border border-[#eceef0]">
+                            {mid}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {squadData.forwards && squadData.forwards.length > 0 && (
+                    <div className="bg-white rounded-3xl border border-[#eceef0] p-5 shadow-sm">
+                      <h3 className="font-poppins font-bold text-lg text-[#191c1e] mb-3 flex items-center gap-2">
+                        <div className="w-2 h-6 bg-[#006b2c] rounded-full"></div>
+                        Atacantes
+                      </h3>
+                      <ul className="flex flex-col gap-2">
+                        {squadData.forwards.map((fwd, idx) => (
+                          <li key={idx} className="font-sans text-[#3e4a3d] text-sm bg-[#f2f4f6] px-3 py-2 rounded-xl border border-[#eceef0]">
+                            {fwd}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center p-8 bg-white rounded-3xl border border-[#eceef0] flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[#fed01b]/20 flex items-center justify-center text-[#735c00]">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <p className="text-[#3e4a3d] font-poppins font-bold">Escalação Oficial</p>
+                  <p className="text-[#6e7b6c] font-sans text-sm">
+                    Ainda não temos a convocação oficial para {selectedTeam}.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

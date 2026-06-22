@@ -71,6 +71,18 @@ export interface ChatMessage {
   };
 }
 
+export interface TeamSquad {
+  id: string;
+  team_name: string;
+  coach: string | null;
+  probable_formation: string | null;
+  probable_lineup: string | null;
+  goalkeepers: string[] | null;
+  defenders: string[] | null;
+  midfielders: string[] | null;
+  forwards: string[] | null;
+}
+
 export type Screen = 
   | 'login'
   | 'register'
