@@ -83,6 +83,7 @@ export type Screen =
   | 'match-details'
   | 'ranking'
   | 'groups'
+  | 'teams'
   | 'profile'
   | 'edit-profile'
   | 'change-password'

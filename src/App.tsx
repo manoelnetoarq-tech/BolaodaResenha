@@ -15,6 +15,7 @@ import GroupsScreen from './components/GroupsScreen';
 import ProfileEdit from './components/ProfileEdit';
 import AuthScreens from './components/AuthScreens';
 import ChatScreen from './components/ChatScreen';
+import TeamsScreen from './components/TeamsScreen';
 import { Trophy, Compass, Star, Flame, Award, ShieldAlert } from 'lucide-react';
 
 import { supabase } from './lib/supabase';
@@ -723,6 +724,19 @@ export default function App() {
             onLogout={handleLogout}
             onNavigate={(scr) => {
               setCurrentScreen(scr);
+            }}
+          />
+        );
+
+      case 'teams':
+        return (
+          <TeamsScreen 
+            matches={matches} 
+            predictions={predictions} 
+            currentUser={currentUser} 
+            onSelectMatch={(mid) => {
+              setSelectedMatchId(mid);
+              setCurrentScreen('match-details');
             }}
           />
         );
