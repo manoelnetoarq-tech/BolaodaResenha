@@ -4,6 +4,13 @@ import App from './App.tsx';
 import './index.css';
 import { registerServiceWorker } from './lib/push';
 
+// Captura global do evento de instalação da PWA
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  (window as any).deferredPrompt = e;
+  window.dispatchEvent(new Event('pwa-install-available'));
+});
+
 // Registrar Service Worker para notificações e PWA
 registerServiceWorker();
 

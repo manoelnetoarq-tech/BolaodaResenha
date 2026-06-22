@@ -7,6 +7,7 @@ import {
 import { UserProfile, Match, Prediction, Screen } from '../types';
 import { supabase } from '../lib/supabase';
 import { isPushEnabled, subscribeToPushNotifications, unsubscribeFromPushNotifications } from '../lib/push';
+import InstallPWAButton from './InstallPWAButton';
 
 interface ProfileEditProps {
   currentUser: UserProfile;
@@ -339,29 +340,7 @@ export default function ProfileEdit({
               </div>
             </button>
 
-            <div className="grid grid-cols-2 gap-3 mt-4">
-              <button 
-                onClick={() => alert("Em breve: Download na App Store!")}
-                className="w-full bg-[#f8f9fa] border border-[#e2e4e7] py-2 px-3 rounded-[12px] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:bg-[#eceef0] transition-colors cursor-pointer"
-              >
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKhBYlMGO0R8BReA3aPzGM0hkECgTOpP2HQFsiHx2I_w&s=10" alt="Apple" className="w-5 h-5 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                <div className="flex flex-col items-start">
-                  <span className="text-[9px] font-sans text-[#3e4a3d] leading-none mb-0.5">Baixar na</span>
-                  <span className="text-[13px] font-sans font-semibold text-black leading-none tracking-tight">App Store</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => alert("Em breve: Download no Google Play!")}
-                className="w-full bg-[#f8f9fa] border border-[#e2e4e7] py-2 px-3 rounded-[12px] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:bg-[#eceef0] transition-colors cursor-pointer"
-              >
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAQxAtQVnby_LbZ9rOfOfsrZzxlBL3HuDeMW_EsynQng&s=10" alt="Google Play" className="w-5 h-5 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                <div className="flex flex-col items-start ml-0.5">
-                  <span className="text-[9px] font-sans text-[#3e4a3d] leading-none mb-0.5">Disponível no</span>
-                  <span className="text-[13px] font-sans font-semibold text-black leading-none tracking-tight">Google Play</span>
-                </div>
-              </button>
-            </div>
+            <InstallPWAButton />
           </section>
         </div>
       )}
