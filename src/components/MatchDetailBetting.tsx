@@ -40,7 +40,7 @@ export default function MatchDetailBetting({
     const matchDate = parseDateString(match.dateStr);
     if (!matchDate) return true; // If parsing fails, default to open
     const diffInMinutes = (matchDate.getTime() - new Date().getTime()) / (1000 * 60);
-    return diffInMinutes >= 15;
+    return diffInMinutes > 0;
   };
 
   const isFormOpen = match.status === 'Aberto' && isBettingOpen();
@@ -54,18 +54,7 @@ export default function MatchDetailBetting({
     e.preventDefault();
     if (!bettorName.trim()) return;
 
-    // Check if the exact score has already been predicted by someone else
-    const isDuplicate = matchPredictions.some(
-      p => p.scoreHome === scoreHome && 
-           p.scoreAway === scoreAway && 
-           p.userEmail !== currentUser.email
-    );
 
-    if (isDuplicate) {
-      setErrorMessage('Outro participante já escolheu esse exato placar. Escolha um resultado diferente!');
-      setTimeout(() => setErrorMessage(''), 5000);
-      return;
-    }
 
     onAddPrediction({
       matchId: match.id,
@@ -361,7 +350,7 @@ export default function MatchDetailBetting({
         <div className="bg-[#ba1a1a]/5 border border-[#ba1a1a]/20 rounded-2xl p-5 text-center select-none">
           <p className="font-poppins font-semibold text-sm text-[#ba1a1a]">
             {match.status === 'Aberto' && !isBettingOpen() 
-              ? 'Tempo limite atingido. Palpites encerram 15 minutos antes do jogo! ⏰'
+              ? 'Tempo limite atingido. O jogo já vai começar! ⏰'
               : match.status === 'Ao Vivo'
               ? 'A bola está rolando! Palpites encerrados e placar ao vivo. 🔥'
               : 'Palpites para este jogo já estão encerrados para novas participações. 🔒'}
